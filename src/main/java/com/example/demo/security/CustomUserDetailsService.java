@@ -47,6 +47,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         }
 
+        if (user == null) {
+            // Proper exception for Spring Security to catch
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
         return new CustomUserDetails(user, serviceMasters, role);
     }
 

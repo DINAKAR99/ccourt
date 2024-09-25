@@ -105,6 +105,16 @@ public class LoginController {
     return mav;
   }
 
+  @RequestMapping("/abort")
+  public ModelAndView loginfailed(ModelAndView mav, Model model) {
+    model.addAttribute(
+        "errorMessageForUsercaptcha",
+        "Invalid Credentials try again");
+
+    mav.setViewName("login");
+    return mav;
+  }
+
   @GetMapping(value = "/userRegistration")
   public ModelAndView userRegistration(ModelMap model) {
     User user = new User();

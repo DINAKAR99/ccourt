@@ -28,7 +28,8 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		String userName = request.getParameter("username");
-
+		System.out.println(request.getParameter("username"));
+		System.out.println(request.getParameter("captcha"));
 		System.out.println("onAuthenticationFailure ::::::::::::username::::::::::::: " + userName);
 		User user = null;
 
@@ -85,7 +86,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
 		}
 
-		super.setDefaultFailureUrl("/login?error");
+		super.setDefaultFailureUrl("/abort");
 		super.onAuthenticationFailure(request, response, exception);
 	}
 

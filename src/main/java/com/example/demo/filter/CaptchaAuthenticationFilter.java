@@ -37,6 +37,7 @@ public class CaptchaAuthenticationFilter implements Filter {
 
             ConcurrentHashMap<Integer, String> capthaStore = LoginController.captchaStore;
             String captchaId = capthaStore.get(1);
+            System.out.println(captchaId);
 
             // System.out.println("userCaptcha: " + userCaptcha);
             // System.out.println("stored: " + captchaId);
