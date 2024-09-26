@@ -39,8 +39,6 @@ public class CaptchaAuthenticationFilter implements Filter {
             System.out.println("stored captha: " + captchaId);
             String userCaptcha = httpRequest.getParameter("captcha");
 
-            // System.out.println("userCaptcha: " + userCaptcha);
-            // System.out.println("stored: " + captchaId);
             if ((userCaptcha == null) || !(userCaptcha.equals(captchaId))) {
                 System.out.println("d]yes--------");
                 // Redirect to CAPTCHA failure page

@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import java.security.SecureRandom;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,10 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.model.UserRoleMapEntity;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.UserRoleMapEntityRepository;
 
 @Controller
 // @RequestMapping("/public")
@@ -33,8 +35,6 @@ public class LoginController {
   private UserRepository userRepository;
   @Autowired
   private PasswordEncoder passwordEncoder;
-  @Autowired
-  private UserRoleMapEntityRepository userRoleMapEntityRepository;
 
   public static final ConcurrentHashMap<Integer, String> captchaStore = new ConcurrentHashMap<>();
 
@@ -144,8 +144,7 @@ public class LoginController {
         return mav;
       }
 
-      // user id validation
-      if (user.getUserId() != null && !user.getUserId().isEmpty()) {
+      if (user.getUserName() != null && !user.getUserName().isEmpty()) {
         {
 
           String hashPassword = passwordEncoder.encode(user.getPassword());
@@ -153,15 +152,14 @@ public class LoginController {
           user.setRealPassword(user.getPassword());
           user.setPassword(hashPassword);
           user.setUserName(user.getUserName().trim());
-
-          User savedUser = userRepository.save(user);
-          Long userCode = savedUser.getUserCode();
-          UserRoleMapEntity userRoleMapEntity = new UserRoleMapEntity();
-          userRoleMapEntity.setRoleId(2L);
-          userRoleMapEntity.setUserCode(userCode);
-          userRoleMapEntityRepository.save(userRoleMapEntity); // String message = "User details registered successfully
-                                                               // with \n User Id : "
-          // + savedUser.getUserId() + "\n" + "Password : " + savedUser.getRealPassword();
+          Role role = new Role();
+          role.setRoleName("USER");
+          role.setDescription("normal user level");
+          user.setRole(role);
+          Set<User> users = new HashSet<User>();
+          users.add(user);
+          role.setUsers(users);
+          userRepository.save(user);
 
           mav.setViewName("redirect:" + "/registrationSuccessful");
           return mav;

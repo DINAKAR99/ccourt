@@ -33,7 +33,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 		System.out.println("onAuthenticationFailure ::::::::::::username::::::::::::: " + userName);
 		User user = null;
 
-		user = userRepository.findByUserId(userName);
+		user = userRepository.findByUserName(userName);
 
 		// if (user != null) {
 		// if (user.isAccountNonLocked()) {

@@ -14,15 +14,12 @@ import com.example.demo.model.User;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.ServiceMasterRepository;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.UserRoleMapEntityRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private UserRoleMapEntityRepository userRoleMapEntityRepository;
 
     Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
@@ -34,28 +31,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     private ServiceMasterRepository serviceMasterRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws RuntimeException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = null;
-        try {
-            user = userRepository.findByUserId(username);
 
-        } catch (Exception e) {
-            System.out.println("no user found for username " + username);
-        }
+        user = userRepository.findByUserName(username);
+
         Role role = null;
         List<ServiceMaster> serviceMasters = null;
-
+        // If user not found, throw exception
+        if (user == null) {
+            System.out.println("yep its me-------------------");
+            throw new UsernameNotFoundException("User not found");
+        }
         if (user != null && user.isAccountNonLocked()) {
-            Long roleId = userRoleMapEntityRepository.findByUserCode(user.getUserCode()).getRoleId();
-            role = roleRepository.findByRoleId(roleId);
-            serviceMasters = serviceMasterRepository.getAllServicesByRole(roleId).stream()
+            role = user.getRole();
+            serviceMasters = serviceMasterRepository.getAllServicesByRole(role.getRoleId()).stream()
                     .filter(serviceMaster -> serviceMaster.getDeleteFlag().equals("F")).collect(Collectors.toList());
 
-        }
-
-        if (user == null) {
-            // Proper exception for Spring Security to catch
-            throw new UsernameNotFoundException("User not found with username: " + username);
         }
 
         return new CustomUserDetails(user, serviceMasters, role);

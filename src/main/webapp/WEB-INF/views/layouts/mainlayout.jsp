@@ -74,7 +74,7 @@ prefix="tiles" %>
 
     <!-- <script src="${pageContext.request.contextPath}/resources/js/scriptCheck.js" defer></script> -->
 
-    <title>TGROW Welcome Page</title>
+    <title>test</title>
     <script>
       // document.onkeydown = function (e) {
       //   const forbiddenKeys = [

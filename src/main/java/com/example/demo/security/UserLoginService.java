@@ -22,12 +22,12 @@ public class UserLoginService {
 	private UserRepository repo;
 
 	public void increaseFailedAttempts(User user) {
-		int newFailAttempts = user.getFailedAttempt() + 1;
-		repo.updateFailedAttempts(newFailAttempts, user.getUserCode());
+		int newFailAttempts = user.getFailedAttempts() + 1;
+		repo.updateFailedAttempts(newFailAttempts, user.getUserId());
 	}
 
-	public void resetFailedAttempts(Long userCode) {
-		repo.updateFailedAttempts(0, userCode);
+	public void resetFailedAttempts(Long userId) {
+		repo.updateFailedAttempts(0, userId);
 	}
 
 	public void lock(User user) {
@@ -44,7 +44,7 @@ public class UserLoginService {
 		if (lockTimeInMillis + LOCK_TIME_DURATION < currentTimeInMillis) {
 			user.setAccountNonLocked(true);
 			user.setLockTime(null);
-			user.setFailedAttempt(0);
+			user.setFailedAttempts(0);
 
 			repo.save(user);
 

@@ -13,7 +13,6 @@ import java.util.*;
 
 public class CustomUserDetails implements UserDetails {
     private static final long serialVersionUID = 1L;
-    private final Logger log = LoggerFactory.getLogger(UserPrincipal.class);
 
     private User user;
     private List<ServiceMaster> serviceMasters;
@@ -26,11 +25,6 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
         this.role = role;
 
-        // log.info("user password username>>>>>>>>>>>>>>>>>"+user.getPassword()+ "
-        // "+user.getUserId());
-        // log.info("this.user password
-        // username>>>>>>>>>>>>>>>>>"+this.user.getPassword()+ "
-        // "+this.user.getUserId());
     }
 
     @Override
@@ -53,7 +47,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserId();
+        return user.getUserName();
     }
 
     @Override

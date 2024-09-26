@@ -9,7 +9,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tfiber_user_roles_mapping")
+@Table(name = "user_roles_mapping")
 public class UserRoleMapEntity {
 
 	@Id
@@ -18,8 +18,8 @@ public class UserRoleMapEntity {
 	@Column(name = "id", unique = true)
 	private Long id;
 
-	@Column(name = "user_code")
-	private Long userCode;
+	@Column(name = "user_id")
+	private Long userId;
 
 	@Column(name = "role_id")
 	private Long roleId;
@@ -30,14 +30,6 @@ public class UserRoleMapEntity {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getUserCode() {
-		return userCode;
-	}
-
-	public void setUserCode(Long userCode) {
-		this.userCode = userCode;
 	}
 
 	public Long getRoleId() {

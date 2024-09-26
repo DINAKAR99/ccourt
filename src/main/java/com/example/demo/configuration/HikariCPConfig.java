@@ -1,4 +1,4 @@
-package com.example.demo.security;
+package com.example.demo.configuration;
 
 import java.util.Properties;
 
@@ -49,16 +49,11 @@ class HikariCPConfig {
    @Value("${spring.datasource.idleTimeout}")
    private int idleTimeout;
 
-   // @Value("${spring.datasource.allowMultiQueries}")
-   // private boolean allowMultiQueries;
-   // @Value("${spring.datasource.type}")
-   // private int dsType;
-
    @Value("${spring.jpa.properties.hibernate.dialect}")
    private String HIBERNATE_DIALECT;
 
    @Value("${spring.jpa.show-sql}")
-   private String HIBERNATE_SHOW_SQL;
+   private Boolean HIBERNATE_SHOW_SQL;
 
    @Value("${spring.jpa.hibernate.ddl-auto}")
    private String HIBERNATE_HBM2DDL_AUTO;
@@ -73,17 +68,11 @@ class HikariCPConfig {
    private Environment env;
 
    @Bean(name = "primaryDataSourceHCPEODB")
-   synchronized HikariDataSource primaryDataSource() {
+   HikariDataSource primaryDataSource() {
       Properties dsProps = new Properties();
       dsProps.put("url", dataSourceUrl);
       dsProps.put("user", user);
       dsProps.put("password", password);
-      /*
-       * dsProps.put("prepStmtCacheSize",250);
-       * dsProps.put("prepStmtCacheSqlLimit",2048);
-       * dsProps.put("cachePrepStmts",Boolean.TRUE);
-       * dsProps.put("useServerPrepStmts",Boolean.TRUE);
-       */
 
       Properties configProps = new Properties();
       configProps.put("dataSourceClassName", dataSourceClassName);
@@ -94,8 +83,6 @@ class HikariCPConfig {
       configProps.put("idleTimeout", idleTimeout);
       configProps.put("leakDetectionThreshold", 60000);
       configProps.put("dataSourceProperties", dsProps);
-      // configProps.put("allowMultiQueries", allowMultiQueries);
-
       HikariConfig hc = new HikariConfig(configProps);
       HikariDataSource ds = new HikariDataSource(hc);
       return ds;
@@ -115,24 +102,6 @@ class HikariCPConfig {
       return sessionFactory;
    }
 
-   /*
-    * @Bean public HibernateTransactionManager transactionManager() {
-    * HibernateTransactionManager txManager = new HibernateTransactionManager();
-    * txManager.setSessionFactory(sessionFactory().getObject()); return txManager;
-    * }
-    */
-
-   /**
-    * Declare the transaction manager.
-    */
-
-   /**
-    * PersistenceExceptionTranslationPostProcessor is a bean post processor
-    * which adds an advisor to any bean annotated with Repository so that any
-    * platform-specific exceptions are caught and then rethrown as one
-    * Spring's unchecked data access exceptions (i.e. a subclass of
-    * DataAccessException).
-    */
    @Bean
    PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
       return new PersistenceExceptionTranslationPostProcessor();

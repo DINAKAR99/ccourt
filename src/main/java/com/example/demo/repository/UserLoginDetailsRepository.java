@@ -8,11 +8,11 @@ import com.example.demo.model.UserLoginDetails;
 
 public interface UserLoginDetailsRepository extends JpaRepository<UserLoginDetails, Long> {
 
-	UserLoginDetails findByUserCode(Long userCode);
+	UserLoginDetails findByUserId(Long userId);
 
 	UserLoginDetails findBySessionId(String sessionId);
 
 	@Modifying
-	@Query(value = "UPDATE tfiber_user_login_details SET is_login=false  WHERE is_login=?1", nativeQuery = true)
+	@Query(value = "UPDATE user_login_details SET is_loggedin=false  WHERE is_login=?1", nativeQuery = true)
 	void updateLoginIsFalse(boolean isLogin);
 }

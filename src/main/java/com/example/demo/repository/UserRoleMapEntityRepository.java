@@ -7,5 +7,5 @@ import com.example.demo.model.UserRoleMapEntity;
 
 @Repository
 public interface UserRoleMapEntityRepository extends JpaRepository<UserRoleMapEntity, Long> {
-	UserRoleMapEntity findByUserCode(Long userCode);
+	UserRoleMapEntity findByUserId(Long userId);
 }

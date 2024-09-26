@@ -11,10 +11,10 @@ import com.example.demo.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserName(String username);
 
-    public User findByUserId(String userName);
+    public User findByUserId(Long userName);
 
-    @Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.userCode = ?2")
+    @Query("UPDATE User u SET u.failedAttempts = ?1 WHERE u.userId = ?2")
     @Modifying
-    public void updateFailedAttempts(int failAttempts, Long userCode);
+    public void updateFailedAttempts(int failAttempts, Long userId);
 
 }
