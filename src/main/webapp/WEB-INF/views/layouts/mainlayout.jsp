@@ -75,24 +75,24 @@ prefix="tiles" %>
     <!-- <script src="${pageContext.request.contextPath}/resources/js/scriptCheck.js" defer></script> -->
 
     <title>TGROW Welcome Page</title>
-    <!-- <script>
-        document.onkeydown = function (e) {
-          const forbiddenKeys = [
-            123,
-            "I".charCodeAt(0),
-            "C".charCodeAt(0),
-            "J".charCodeAt(0),
-            "U".charCodeAt(0),
-            "S".charCodeAt(0),
-          ];
-          if (
-            forbiddenKeys.includes(e.keyCode) ||
-            (e.ctrlKey && forbiddenKeys.slice(1).includes(e.keyCode))
-          ) {
-            return false;
-          }
-        };
-      </script> -->
+    <script>
+      // document.onkeydown = function (e) {
+      //   const forbiddenKeys = [
+      //     123,
+      //     "I".charCodeAt(0),
+      //     "C".charCodeAt(0),
+      //     "J".charCodeAt(0),
+      //     "U".charCodeAt(0),
+      //     "S".charCodeAt(0),
+      //   ];
+      //   if (
+      //     forbiddenKeys.includes(e.keyCode) ||
+      //     (e.ctrlKey && forbiddenKeys.slice(1).includes(e.keyCode))
+      //   ) {
+      //     return false;
+      //   }
+      // };
+    </script>
   </head>
 
   <body>

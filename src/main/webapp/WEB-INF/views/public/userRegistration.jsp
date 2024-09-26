@@ -8,21 +8,22 @@
 <body>
     <div class="row p-5">
         <div class="col-6 offset-3 p-3 border rounded shadow shadow-lg  ">
-            <h2 class=" text-center">New Registration </h2>
-            <form id="registrationForm" novalidate>
+            <h2 class=" text-center"> </h2>
+            <form id="registrationForm" action="${pageContext.request.contextPath}/userRegistration" method="post"
+                novalidate>
                 <div class="mb-3">
                     <label for="name" class="form-label">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <input type="text" class="form-control" id="name" name="userName" required>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <label for="email" class="form-label">userId:</label>
+                        <input type="text" class="form-control" id="userid" name="userId" required>
                     </div>
                     <div class="col">
                         <label for="mobile" class="form-label">Mobile:</label>
-                        <input type="text" class="form-control" id="mobile" name="mobile" required>
+                        <input type="text" class="form-control" id="mobile" name="userMobile" required>
                     </div>
                 </div>
 
@@ -35,7 +36,7 @@
                     <button type="button" class="btn btn-outline-info px-2 pt-0 pb-0 ml-2" onClick="fetchCaptcha();">
                         <i class="fa fa-refresh " aria-hidden="true"></i>
                     </button>
-                    <div><input name="captcha" required="required" type="text" id="captchaInput2"
+                    <div><input name="captcha" required="required" type="text" id="captchaInput2" name="captcha"
                             class="inputbox col-sm-7 form-control ml-2" placeholder="Enter CAPTCHA" /></div>
 
                 </div>
@@ -62,13 +63,13 @@
 
             $("#registrationForm").validate({
                 rules: {
-                    name: {
+                    userName: {
                         required: true,
                         minlength: 2
                     },
-                    email: {
+                    userId: {
                         required: true,
-                        email: true
+                        // email: true
                     },
                     mobile: {
                         required: true,
@@ -87,13 +88,14 @@
                     }
                 },
                 messages: {
-                    name: {
+                    userName: {
                         required: "Please enter your name",
                         minlength: "Your name must be at least 2 characters long"
                     },
-                    email: {
-                        required: "Please enter your email address",
-                        email: "Please enter a valid email address"
+                    userId: {
+                        required: "Please enter your name",
+                        // email: "Please enter a valid email address"
+
                     },
                     mobile: {
                         required: "Please enter your mobile number",

@@ -36,7 +36,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
 		Logger log = LoggerFactory.getLogger(CustomLoginSuccessHandler.class);
 
-		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
 		log.info(">>>>>>>>>>>>>CustomLoginSuccessHandler  >>>");
 
@@ -44,76 +44,84 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
 		UserLoginDetails userLoginDetails = null, dbUserLoginDetails = null;
 
-		if (!userDetails.getUser().isAccountNonLocked()) {
+		// if (!userDetails.getUser().isAccountNonLocked()) {
 
-			long lockTimeInMillis = user.getLockTime().getTime();
+		// long lockTimeInMillis = user.getLockTime().getTime();
 
-			long currentTimeInMillis = System.currentTimeMillis();
+		// long currentTimeInMillis = System.currentTimeMillis();
 
-			long lockTime = UserLoginService.getLockTimeDuration();
+		// long lockTime = UserLoginService.getLockTimeDuration();
 
-			if (lockTimeInMillis + lockTime > currentTimeInMillis) {
+		// if (lockTimeInMillis + lockTime > currentTimeInMillis) {
 
-				long leftLockTimeInMin = ((lockTimeInMillis + lockTime) - currentTimeInMillis) / (1000 * 60);
-				String msg = "Too many wrong attempts. You are locked out!. It will be unlocked after "
-						+ leftLockTimeInMin + " Minutes.";
+		// long leftLockTimeInMin = ((lockTimeInMillis + lockTime) -
+		// currentTimeInMillis) / (1000 * 60);
+		// String msg = "Too many wrong attempts. You are locked out!. It will be
+		// unlocked after "
+		// + leftLockTimeInMin + " Minutes.";
 
-				request.getSession().setAttribute("lockedMsg", msg);
-				redirectStrategy.sendRedirect(request, response, "/login");
+		// request.getSession().setAttribute("lockedMsg", msg);
+		// redirectStrategy.sendRedirect(request, response, "/login");
 
-			} else {
-				userLoginService.unlockWhenTimeExpired(user);
-				String msg = "Due to,too many wrong attempts your account was locked earlier,now its unlock please login again";
+		// } else {
+		// userLoginService.unlockWhenTimeExpired(user);
+		// String msg = "Due to,too many wrong attempts your account was locked
+		// earlier,now its unlock please login again";
 
-				request.getSession().setAttribute("lockedMsg", msg);
-				redirectStrategy.sendRedirect(request, response, "/login");
-			}
-		} else {
+		// request.getSession().setAttribute("lockedMsg", msg);
+		// redirectStrategy.sendRedirect(request, response, "/login");
+		// }
+		// } else {
 
-			dbUserLoginDetails = userLoginDetailsRepository.findByUserCode(user.getUserCode());
+		// dbUserLoginDetails =
+		// userLoginDetailsRepository.findByUserCode(user.getUserCode());
 
-			if (dbUserLoginDetails == null) {
+		// if (dbUserLoginDetails == null) {
 
-				userLoginDetails = new UserLoginDetails();
+		// userLoginDetails = new UserLoginDetails();
 
-				userLoginDetails.setLoginIPAddress(request.getRemoteAddr());
-				userLoginDetails.setUserId(user.getUserName());
-				userLoginDetails.setUserCode(user.getUserCode());
-				userLoginDetails.setSessionId(request.getSession().getId());
-				dbUserLoginDetails = userLoginDetailsRepository.save(userLoginDetails);
+		// userLoginDetails.setLoginIPAddress(request.getRemoteAddr());
+		// userLoginDetails.setUserId(user.getUserName());
+		// userLoginDetails.setUserCode(user.getUserCode());
+		// userLoginDetails.setSessionId(request.getSession().getId());
+		// dbUserLoginDetails = userLoginDetailsRepository.save(userLoginDetails);
 
-			}
-			System.out.println("22222222222222222222222222222222222222");
-			if (!dbUserLoginDetails.isLogin()) {
+		// }
+		// System.out.println("22222222222222222222222222222222222222");
+		// if (!dbUserLoginDetails.isLogin()) {
 
-				System.out.println("11111111111111111111111111111111111");
+		// System.out.println("11111111111111111111111111111111111");
 
-				if (user.getFailedAttempt() > 0) {
-					userLoginService.resetFailedAttempts(user.getUserCode());
+		// if (user.getFailedAttempt() > 0) {
+		// userLoginService.resetFailedAttempts(user.getUserCode());
 
-					System.out.println("33333333333333333333333");
-				}
+		// System.out.println("33333333333333333333333");
+		// }
 
-				System.out.println("session id :::::::::::::::: " + request.getSession().getId());
+		// System.out.println("session id :::::::::::::::: " +
+		// request.getSession().getId());
 
-				dbUserLoginDetails.setLogin(true);
-				dbUserLoginDetails.setLoginTime(LocalDateTime.now());
-				dbUserLoginDetails.setSessionId(request.getSession().getId());
-				dbUserLoginDetails.setLogoutTime(null);
-				dbUserLoginDetails.setLoginIPAddress(request.getRemoteAddr());
-				userLoginDetailsRepository.save(dbUserLoginDetails);
-				request.getSession().setAttribute("userAgent", request.getHeader("user-agent").length());
+		// dbUserLoginDetails.setLogin(true);
+		// dbUserLoginDetails.setLoginTime(LocalDateTime.now());
+		// dbUserLoginDetails.setSessionId(request.getSession().getId());
+		// dbUserLoginDetails.setLogoutTime(null);
+		// dbUserLoginDetails.setLoginIPAddress(request.getRemoteAddr());
+		// userLoginDetailsRepository.save(dbUserLoginDetails);
+		// request.getSession().setAttribute("userAgent",
+		// request.getHeader("user-agent").length());
 
-				redirectStrategy.sendRedirect(request, response, "/dashboard");
+		// redirectStrategy.sendRedirect(request, response, "/dashboard");
 
-			} else if (dbUserLoginDetails.isLogin()) {
+		// } else if (dbUserLoginDetails.isLogin()) {
 
-				System.out.println("dual login >>>>>>>>>>>>>>>>>>>>>>");
-				redirectStrategy.sendRedirect(request, response, "/dualLogin");
+		// System.out.println("dual login >>>>>>>>>>>>>>>>>>>>>>");
+		// redirectStrategy.sendRedirect(request, response, "/dualLogin");
 
-			}
+		// }
 
-		}
+		// }
+		System.out.println("yes succesfully logged in");
+		redirectStrategy.sendRedirect(request, response, "/");
 		super.onAuthenticationSuccess(request, response, authentication);
 
 	}

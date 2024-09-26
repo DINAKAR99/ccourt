@@ -46,4 +46,7 @@
     <definition name="userRegistration" extends="public-layout">
         <put-attribute name="content" value="/WEB-INF/views/public/userRegistration.jsp"/>
     </definition>
+    <definition name="registrationSuccessful" extends="public-layout">
+        <put-attribute name="content" value="/WEB-INF/views/public/registrationSuccessful.jsp"/>
+    </definition>
 </tiles-definitions>

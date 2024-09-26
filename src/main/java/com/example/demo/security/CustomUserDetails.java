@@ -1,5 +1,7 @@
 package com.example.demo.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,8 +13,30 @@ import java.util.*;
 
 public class CustomUserDetails implements UserDetails {
     private static final long serialVersionUID = 1L;
+    private final Logger log = LoggerFactory.getLogger(UserPrincipal.class);
+
     private User user;
     private List<ServiceMaster> serviceMasters;
+
+    private Role role;
+
+    public CustomUserDetails(User user, List<ServiceMaster> serviceMasters, Role role) {
+        super();
+        this.serviceMasters = serviceMasters;
+        this.user = user;
+        this.role = role;
+
+        // log.info("user password username>>>>>>>>>>>>>>>>>"+user.getPassword()+ "
+        // "+user.getUserId());
+        // log.info("this.user password
+        // username>>>>>>>>>>>>>>>>>"+this.user.getPassword()+ "
+        // "+this.user.getUserId());
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 
     public List<ServiceMaster> getServiceMasters() {
         return serviceMasters;
@@ -22,29 +46,6 @@ public class CustomUserDetails implements UserDetails {
         this.serviceMasters = serviceMasters;
     }
 
-    private Role role;
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public CustomUserDetails(User user, List<ServiceMaster> serviceMasters, Role role) {
-        super();
-        this.serviceMasters = serviceMasters;
-        this.user = user;
-        this.role = role;
-
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -52,7 +53,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserName();
+        return user.getUserId();
     }
 
     @Override
@@ -73,5 +74,21 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

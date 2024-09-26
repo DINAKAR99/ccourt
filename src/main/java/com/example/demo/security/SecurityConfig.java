@@ -50,7 +50,7 @@ public class SecurityConfig {
                                                 UsernamePasswordAuthenticationFilter.class)
                                 .formLogin(form -> form
                                                 .loginPage("/loginPage")
-                                                .failureUrl("/login?error=true")
+                                                .failureUrl("/abort")
                                                 .loginProcessingUrl("/login")
                                                 .failureHandler(loginFailureHandler)
                                                 .successHandler(loginSuccessHandler)
