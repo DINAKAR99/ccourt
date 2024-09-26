@@ -31,6 +31,9 @@
         <li class="nav-item">
           <a class="nav-link mx-2" href="${pageContext.request.contextPath}/loginPage">Login</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link mx-2" href="${pageContext.request.contextPath}/logout">LOgout</a>
+        </li>
       </ul>
     </div>
   </div>

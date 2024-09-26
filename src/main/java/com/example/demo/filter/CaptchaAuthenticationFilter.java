@@ -31,12 +31,13 @@ public class CaptchaAuthenticationFilter implements Filter {
         String requestURI = httpRequest.getRequestURI();
         // Check if this is the login request
         if (requestURI.endsWith("/login")) {
-            String t1 = (httpRequest.getParameter("captcha"));
-            System.out.println("user captha: " + t1);
-            String userCaptcha = httpRequest.getParameter("captcha");
-
             ConcurrentHashMap<Integer, String> capthaStore = LoginController.captchaStore;
             String captchaId = capthaStore.get(1);
+            System.out.println("the uri " + requestURI);
+            String t1 = (httpRequest.getParameter("captcha"));
+            System.out.println("user captha: " + t1);
+            System.out.println("stored captha: " + captchaId);
+            String userCaptcha = httpRequest.getParameter("captcha");
 
             // System.out.println("userCaptcha: " + userCaptcha);
             // System.out.println("stored: " + captchaId);
