@@ -34,8 +34,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     private ServiceMasterRepository serviceMasterRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserId(username);
+    public UserDetails loadUserByUsername(String username) throws RuntimeException {
+        User user = null;
+        try {
+            user = userRepository.findByUserId(username);
+
+        } catch (Exception e) {
+            System.out.println("no user found for username " + username);
+        }
         Role role = null;
         List<ServiceMaster> serviceMasters = null;
 
