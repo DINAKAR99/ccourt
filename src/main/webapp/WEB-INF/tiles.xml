@@ -49,4 +49,7 @@
     <definition name="registrationSuccessful" extends="public-layout">
         <put-attribute name="content" value="/WEB-INF/views/public/registrationSuccessful.jsp"/>
     </definition>
+    <definition name="dualLogin" extends="public-layout">
+        <put-attribute name="content" value="/WEB-INF/views/public/dualLogin.jsp"/>
+    </definition>
 </tiles-definitions>

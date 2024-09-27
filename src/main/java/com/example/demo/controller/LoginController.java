@@ -1,15 +1,23 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Role;
+import com.example.demo.model.User;
+import com.example.demo.model.UserRoleMapEntity;
+import com.example.demo.repository.UserRepository;
 import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -18,14 +26,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.example.demo.model.Role;
-import com.example.demo.model.User;
-import com.example.demo.model.UserRoleMapEntity;
-import com.example.demo.repository.UserRepository;
 
 @Controller
 // @RequestMapping("/public")
@@ -33,6 +37,7 @@ public class LoginController {
 
   @Autowired
   private UserRepository userRepository;
+
   @Autowired
   private PasswordEncoder passwordEncoder;
 
@@ -47,8 +52,9 @@ public class LoginController {
 
   @GetMapping(value = "public/forgotPassword")
   public String forgotPassword(
-      HttpServletRequest request,
-      Authentication authentication) {
+    HttpServletRequest request,
+    Authentication authentication
+  ) {
     request.setAttribute("userIdBlock", true);
 
     System.out.println("forgot password >>>>>>>>>>>>>>>>>>");
@@ -83,8 +89,9 @@ public class LoginController {
   @RequestMapping("/captchafailure")
   public ModelAndView captchaFailure(ModelAndView mav, Model model) {
     model.addAttribute(
-        "errorMessageForUsercaptcha",
-        "Captcha validation failed, please try again");
+      "errorMessageForUsercaptcha",
+      "Captcha validation failed, please try again"
+    );
 
     mav.setViewName("login");
     return mav;
@@ -92,22 +99,54 @@ public class LoginController {
 
   @RequestMapping("/abort")
   public ModelAndView abort(ModelAndView mav, Model model) {
-    model.addAttribute(
-        "errorMessageForUsercaptcha",
-        "invalid credentials");
+    model.addAttribute("errorMessageForUsercaptcha", "invalid credentials");
 
     mav.setViewName("login");
     return mav;
   }
 
-  @RequestMapping("/logoff")
-  public ModelAndView logoff(ModelAndView mav, Model model) {
-    model.addAttribute(
-        "message",
-        "logout successfull");
+  @GetMapping(value = "/invalidCredentials")
+  public String loginPage(
+    @RequestParam(value = "user", required = false) String user,
+    Model model,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) {
+    String errorMessge = null;
+    if (user != null) {
+      HttpSession session = request.getSession(false);
+      if (session != null) {
+        AuthenticationException ex = (AuthenticationException) session.getAttribute(
+          WebAttributes.AUTHENTICATION_EXCEPTION
+        );
+        if (ex != null) {
+          errorMessge = ex.getMessage();
+        }
+      }
+      // request.getSession().getAttributeNames()
+    } else {
+      errorMessge = "Invalid credentials";
+    }
+    model.addAttribute("errorMessageForUsercaptcha", errorMessge);
+    return "login";
+  }
 
-    mav.setViewName("/");
-    return mav;
+  @GetMapping("/logoff")
+  public String logout(
+    HttpServletRequest request,
+    HttpServletResponse response,
+    Model model
+  ) {
+    Authentication auth = SecurityContextHolder
+      .getContext()
+      .getAuthentication();
+
+    if (auth != null) {
+      new SecurityContextLogoutHandler().logout(request, response, auth);
+    }
+
+    model.addAttribute("message", "logout successful");
+    return "/";
   }
 
   @GetMapping(value = "/userRegistration")
@@ -123,11 +162,12 @@ public class LoginController {
   @PostMapping(value = "/userRegistration")
   @Transactional
   public ModelAndView saveUserRegistration(
-      ModelAndView mav,
-      HttpServletRequest request,
-      @ModelAttribute("userRegistrationDTO") User user,
-      Model model,
-      RedirectAttributes redirectAttributes) {
+    ModelAndView mav,
+    HttpServletRequest request,
+    @ModelAttribute("userRegistrationDTO") User user,
+    Model model,
+    RedirectAttributes redirectAttributes
+  ) {
     if (user != null) {
       String storedCaptcha = captchaStore.get(1);
       System.out.println("yesss STORED CAPTCHA " + storedCaptcha);
@@ -137,8 +177,9 @@ public class LoginController {
       if (!(storedCaptcha.equals(user.getCaptcha()))) {
         // captchaStore.remove(1); // Optional: Remove token after validation
         model.addAttribute(
-            "errorMessageForUsercaptcha",
-            "Captcha validation failed, please try again");
+          "errorMessageForUsercaptcha",
+          "Captcha validation failed, please try again"
+        );
         model.addAttribute("userRegistrationDTO", user);
         mav.setViewName("userRegistration");
         return mav;
@@ -146,7 +187,6 @@ public class LoginController {
 
       if (user.getUserName() != null && !user.getUserName().isEmpty()) {
         {
-
           String hashPassword = passwordEncoder.encode(user.getPassword());
 
           user.setRealPassword(user.getPassword());
@@ -183,4 +223,8 @@ public class LoginController {
     return "registrationSuccessful";
   }
 
+  @GetMapping("/dualLogin")
+  public String dualLogin(ModelAndView mav, Model model) {
+    return "dualLogin";
+  }
 }

@@ -25,12 +25,11 @@ public class UserLoginDetails {
 
 	@Column(name = "user_id")
 	private Long userId;
+	@Column(name = "user_name")
+	private String userName;
 
 	@Column(name = "session_id")
 	private String sessionId;
-
-	@Column(name = "first_session_id")
-	private String firstSessionId;
 
 	@Column(name = "login_time")
 	private LocalDateTime loginTime = LocalDateTime.now();
@@ -43,6 +42,14 @@ public class UserLoginDetails {
 
 	@Column(name = "is_loggedin")
 	private boolean isLogin = false;
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 	public Long getId() {
 		return id;
@@ -98,12 +105,12 @@ public class UserLoginDetails {
 		this.sessionId = sessionId;
 	}
 
-	public String getFirstSessionId() {
-		return firstSessionId;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setFirstSessionId(String firstSessionId) {
-		this.firstSessionId = firstSessionId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 }
