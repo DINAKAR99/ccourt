@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -23,6 +24,13 @@ public class WebConfig {
       new MyHttpSessionListener(userLoginDetailsRepository)
     );
     return listenerRegBean;
+  }
+
+  @Bean
+  public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+    return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(
+      new HttpSessionEventPublisher()
+    );
   }
 
   @Bean

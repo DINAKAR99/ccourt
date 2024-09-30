@@ -45,7 +45,8 @@ public class SecurityConfig {
       // .frameOptions().sameOrigin())
       .authorizeRequests(requests ->
         requests
-          // .antMatchers("/", "/home").permitAll()
+          .antMatchers("/protected")
+          .authenticated()
           .anyRequest()
           .permitAll()
       )
@@ -77,6 +78,7 @@ public class SecurityConfig {
           .sessionFixation()
           .none() // Migrate session to prevent
           // fixation attacks
+
           .maximumSessions(1) // Max sessions allowed
           .maxSessionsPreventsLogin(true) // Prevent new login if max sessions
           // reached
@@ -91,19 +93,6 @@ public class SecurityConfig {
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-
-  // @Bean
-  // InMemoryUserDetailsManager userDetailsService() throws Exception {
-  // return new InMemoryUserDetailsManager(
-  // User.withUsername("user")
-  // .password(passwordEncoder().encode("password"))
-  // .roles("USER")
-  // .build(),
-  // User.withUsername("admin")
-  // .password(passwordEncoder().encode("admin"))
-  // .roles("ADMIN")
-  // .build());
-  // }
 
   @Bean
   AccessDeniedHandler accessDeniedHandler() {

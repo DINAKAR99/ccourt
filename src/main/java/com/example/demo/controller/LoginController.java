@@ -2,9 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
-import com.example.demo.model.UserRoleMapEntity;
+import com.example.demo.model.UserLoginDetails;
+import com.example.demo.repository.UserLoginDetailsRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.CustomUserDetails;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,9 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -34,9 +42,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 // @RequestMapping("/public")
 public class LoginController {
+  @Autowired
+  @Qualifier("sessionRegistry")
+  private SessionRegistry sessionRegistry;
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private UserLoginDetailsRepository userLoginDetailsRepository;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -52,9 +66,8 @@ public class LoginController {
 
   @GetMapping(value = "public/forgotPassword")
   public String forgotPassword(
-    HttpServletRequest request,
-    Authentication authentication
-  ) {
+      HttpServletRequest request,
+      Authentication authentication) {
     request.setAttribute("userIdBlock", true);
 
     System.out.println("forgot password >>>>>>>>>>>>>>>>>>");
@@ -89,9 +102,8 @@ public class LoginController {
   @RequestMapping("/captchafailure")
   public ModelAndView captchaFailure(ModelAndView mav, Model model) {
     model.addAttribute(
-      "errorMessageForUsercaptcha",
-      "Captcha validation failed, please try again"
-    );
+        "errorMessageForUsercaptcha",
+        "Captcha validation failed, please try again");
 
     mav.setViewName("login");
     return mav;
@@ -105,20 +117,46 @@ public class LoginController {
     return mav;
   }
 
+  @RequestMapping("/dualsessionlogin")
+  public ModelAndView dualsessionlogin(
+      ModelAndView mav,
+      Model model,
+      HttpServletRequest request) {
+    // Get the current Authentication object
+    Authentication authentication = SecurityContextHolder
+        .getContext()
+        .getAuthentication();
+
+    // get th previoud logged in session info
+    if (authentication != null && authentication.isAuthenticated()) {
+      CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+      UserLoginDetails user1 = userLoginDetailsRepository.findByUserId(customUserDetails.getUser().getUserId());
+      SessionInformation sessionInformation = sessionRegistry.getSessionInformation(user1.getSessionId());
+      if (sessionInformation != null && !sessionInformation.isExpired())
+        sessionInformation.expireNow();
+      // save new user login details
+      user1.setLoginIPAddress(request.getRemoteAddr());
+      user1.setLoginTime(LocalDateTime.now());
+      user1.setSessionId(request.getSession().getId());
+      userLoginDetailsRepository.save(user1);
+    } else {
+    }
+    mav.setViewName("/");
+    return mav;
+  }
+
   @GetMapping(value = "/invalidCredentials")
   public String loginPage(
-    @RequestParam(value = "user", required = false) String user,
-    Model model,
-    HttpServletRequest request,
-    HttpServletResponse response
-  ) {
+      @RequestParam(value = "user", required = false) String user,
+      Model model,
+      HttpServletRequest request,
+      HttpServletResponse response) {
     String errorMessge = null;
     if (user != null) {
       HttpSession session = request.getSession(false);
       if (session != null) {
         AuthenticationException ex = (AuthenticationException) session.getAttribute(
-          WebAttributes.AUTHENTICATION_EXCEPTION
-        );
+            WebAttributes.AUTHENTICATION_EXCEPTION);
         if (ex != null) {
           errorMessge = ex.getMessage();
         }
@@ -133,13 +171,12 @@ public class LoginController {
 
   @GetMapping("/logoff")
   public String logout(
-    HttpServletRequest request,
-    HttpServletResponse response,
-    Model model
-  ) {
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Model model) {
     Authentication auth = SecurityContextHolder
-      .getContext()
-      .getAuthentication();
+        .getContext()
+        .getAuthentication();
 
     if (auth != null) {
       new SecurityContextLogoutHandler().logout(request, response, auth);
@@ -162,12 +199,11 @@ public class LoginController {
   @PostMapping(value = "/userRegistration")
   @Transactional
   public ModelAndView saveUserRegistration(
-    ModelAndView mav,
-    HttpServletRequest request,
-    @ModelAttribute("userRegistrationDTO") User user,
-    Model model,
-    RedirectAttributes redirectAttributes
-  ) {
+      ModelAndView mav,
+      HttpServletRequest request,
+      @ModelAttribute("userRegistrationDTO") User user,
+      Model model,
+      RedirectAttributes redirectAttributes) {
     if (user != null) {
       String storedCaptcha = captchaStore.get(1);
       System.out.println("yesss STORED CAPTCHA " + storedCaptcha);
@@ -177,9 +213,8 @@ public class LoginController {
       if (!(storedCaptcha.equals(user.getCaptcha()))) {
         // captchaStore.remove(1); // Optional: Remove token after validation
         model.addAttribute(
-          "errorMessageForUsercaptcha",
-          "Captcha validation failed, please try again"
-        );
+            "errorMessageForUsercaptcha",
+            "Captcha validation failed, please try again");
         model.addAttribute("userRegistrationDTO", user);
         mav.setViewName("userRegistration");
         return mav;

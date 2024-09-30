@@ -52,4 +52,10 @@
     <definition name="dualLogin" extends="public-layout">
         <put-attribute name="content" value="/WEB-INF/views/public/dualLogin.jsp"/>
     </definition>
+    <definition name="protected" extends="public-layout">
+        <put-attribute name="content" value="/WEB-INF/views/public/protected.jsp"/>
+    </definition>
+    <definition name="sessionExpired" extends="public-layout">
+        <put-attribute name="content" value="/WEB-INF/views/public/sessionExpired.jsp"/>
+    </definition>
 </tiles-definitions>

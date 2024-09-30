@@ -98,7 +98,7 @@ public class CustomLoginSuccessHandler
           .getSession()
           .setAttribute("userAgent", request.getHeader("user-agent").length());
 
-        redirectStrategy.sendRedirect(request, response, "/");
+        redirectStrategy.sendRedirect(request, response, "/protected");
       } else if (dbUserLoginDetails.isLogin()) {
         System.out.println("dual login is detected please logout first");
         redirectStrategy.sendRedirect(request, response, "/dualLogin");
