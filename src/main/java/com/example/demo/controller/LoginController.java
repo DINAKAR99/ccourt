@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -56,6 +57,29 @@ public class LoginController {
   private PasswordEncoder passwordEncoder;
 
   public static final ConcurrentHashMap<Integer, String> captchaStore = new ConcurrentHashMap<>();
+
+  @RequestMapping(value = { "/", "/{x:[\\w\\-]+}", "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
+  public String fallback(HttpServletRequest request) {
+    // Check if the request is for a static resource (assets)
+    String fullUrl = request.getRequestURL().toString();
+
+    System.out.println(fullUrl);
+
+    // For any other request, forward to index.html
+    return "index.html";
+  }
+
+  // @RequestMapping(value = "/signup", method = { RequestMethod.GET,
+  // RequestMethod.POST })
+  // public String fallbackd(HttpServletRequest request) {
+  // // Check if the request is for a static resource (assets)
+  // String fullUrl = request.getRequestURL().toString();
+
+  // System.out.println(fullUrl);
+
+  // // For any other request, forward to index.html
+  // return "forward:/index.html";
+  // }
 
   @GetMapping(value = "loginPage")
   public ModelAndView loginPage(ModelMap model) {

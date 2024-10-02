@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 @Configuration
 public class CustomLoginSuccessHandler
-  extends SimpleUrlAuthenticationSuccessHandler {
+    extends SimpleUrlAuthenticationSuccessHandler {
 
   private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -31,10 +31,9 @@ public class CustomLoginSuccessHandler
 
   @Override
   public void onAuthenticationSuccess(
-    HttpServletRequest request,
-    HttpServletResponse response,
-    Authentication authentication
-  ) throws IOException, ServletException {
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Authentication authentication) throws IOException, ServletException {
     Logger log = LoggerFactory.getLogger(CustomLoginSuccessHandler.class);
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -53,26 +52,22 @@ public class CustomLoginSuccessHandler
       long lockTime = UserLoginService.getLockTimeDuration();
 
       if (lockTimeInMillis + lockTime > currentTimeInMillis) {
-        long leftLockTimeInMin =
-          ((lockTimeInMillis + lockTime) - currentTimeInMillis) / (1000 * 60);
-        String msg =
-          "Too many wrong attempts. You are locked out!. It will be unlocked after " +
-          leftLockTimeInMin +
-          " Minutes.";
+        long leftLockTimeInMin = ((lockTimeInMillis + lockTime) - currentTimeInMillis) / (1000 * 60);
+        String msg = "Too many wrong attempts. You are locked out!. It will be unlocked after " +
+            leftLockTimeInMin +
+            " Minutes.";
 
         request.getSession().setAttribute("errorMessageForUsercaptcha", msg);
-        redirectStrategy.sendRedirect(request, response, "/login");
+        redirectStrategy.sendRedirect(request, response, "/loginPage");
       } else {
         userLoginService.unlockWhenTimeExpired(user);
-        String msg =
-          "Due to,too many wrong attempts your account was locked earlier,now its unlock please login again";
+        String msg = "Due to,too many wrong attempts your account was locked earlier,now its unlock please login again";
 
         request.getSession().setAttribute("errorMessageForUsercaptcha", msg);
-        redirectStrategy.sendRedirect(request, response, "/login");
+        redirectStrategy.sendRedirect(request, response, "/loginPage");
       }
     } else {
-      dbUserLoginDetails =
-        userLoginDetailsRepository.findByUserId(user.getUserId());
+      dbUserLoginDetails = userLoginDetailsRepository.findByUserId(user.getUserId());
 
       if (dbUserLoginDetails == null) {
         userLoginDetails = new UserLoginDetails();
@@ -95,8 +90,8 @@ public class CustomLoginSuccessHandler
         dbUserLoginDetails.setLoginIPAddress(request.getRemoteAddr());
         userLoginDetailsRepository.save(dbUserLoginDetails);
         request
-          .getSession()
-          .setAttribute("userAgent", request.getHeader("user-agent").length());
+            .getSession()
+            .setAttribute("userAgent", request.getHeader("user-agent").length());
 
         redirectStrategy.sendRedirect(request, response, "/protected");
       } else if (dbUserLoginDetails.isLogin()) {

@@ -18,6 +18,7 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -38,53 +39,41 @@ public class SecurityConfig {
     // .ignoringAntMatchers("/api/**") // Disable CSRF for API endpoints
     // )
     http
-      .csrf(csrf -> csrf.disable())
-      // .headers(headers -> headers
-      // .contentSecurityPolicy("default-src 'self'")
-      // .and()
-      // .frameOptions().sameOrigin())
-      .authorizeRequests(requests ->
-        requests
-          .antMatchers("/protected")
-          .authenticated()
-          .anyRequest()
-          .permitAll()
-      )
-      .addFilterBefore(
-        new CaptchaAuthenticationFilter(),
-        UsernamePasswordAuthenticationFilter.class
-      )
-      .formLogin(form ->
-        form
-          .loginPage("/loginPage")
-          .loginProcessingUrl("/login")
-          .failureHandler(loginFailureHandler)
-          .successHandler(loginSuccessHandler)
-          .permitAll()
-      )
-      .logout(logout ->
-        logout
-          .invalidateHttpSession(true)
-          .clearAuthentication(true)
-          .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-          .logoutSuccessUrl("/logoff")
-          .permitAll()
-      )
-      .exceptionHandling(exception ->
-        exception.accessDeniedHandler(accessDeniedHandler())
-      )
-      .sessionManagement(session ->
-        session
-          .sessionFixation()
-          .none() // Migrate session to prevent
-          // fixation attacks
-
-          .maximumSessions(1) // Max sessions allowed
-          .maxSessionsPreventsLogin(true) // Prevent new login if max sessions
-          // reached
-          .expiredUrl("/sessionExpired") // Redirect on session expiration
-          .sessionRegistry(sessionRegistry()) // Track session registry
-      );
+        .csrf(csrf -> csrf.disable())
+        // .headers(headers -> headers
+        // .contentSecurityPolicy("default-src 'self'")
+        // .and()
+        // .frameOptions().sameOrigin())
+        .authorizeRequests(requests -> requests
+            .antMatchers("/protected").authenticated()
+            .anyRequest()
+            .permitAll())
+        .addFilterBefore(
+            new CaptchaAuthenticationFilter(),
+            UsernamePasswordAuthenticationFilter.class)
+        .formLogin(form -> form
+            .loginPage("/loginPage")
+            .loginProcessingUrl("/login")
+            .failureHandler(loginFailureHandler)
+            .successHandler(loginSuccessHandler)
+            .permitAll())
+        .logout(logout -> logout
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+            .logoutSuccessUrl("/logoff")
+            .permitAll())
+        .exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler()))
+        .sessionManagement(session -> session
+            .sessionFixation()
+            .none() // Migrate session to prevent
+            // fixation attacks
+            .maximumSessions(1) // Max sessions allowed
+            .maxSessionsPreventsLogin(true) // Prevent new login if max sessions
+            // reached
+            .expiredUrl("/sessionExpired") // Redirect on session expiration
+            .sessionRegistry(sessionRegistry()) // Track session registry
+        );
 
     return http.build();
   }
@@ -93,6 +82,24 @@ public class SecurityConfig {
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
+  // @Bean
+  // HttpSessionEventPublisher httpSessionEventPublisher() {
+  // return new HttpSessionEventPublisher();
+  // }
+
+  // @Bean
+  // InMemoryUserDetailsManager userDetailsService() throws Exception {
+  // return new InMemoryUserDetailsManager(
+  // User.withUsername("user")
+  // .password(passwordEncoder().encode("password"))
+  // .roles("USER")
+  // .build(),
+  // User.withUsername("admin")
+  // .password(passwordEncoder().encode("admin"))
+  // .roles("ADMIN")
+  // .build());
+  // }
 
   @Bean
   AccessDeniedHandler accessDeniedHandler() {

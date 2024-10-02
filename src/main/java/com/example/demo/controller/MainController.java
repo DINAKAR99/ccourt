@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class MainController {
 
-  @RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-  public String homePage(Model model) {
-    System.out.println("---- HOME CONTROLLER ----------");
-    return "homePage";
-  }
+  // @RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
+  // public String homePage(Model model) {
+  // System.out.println("---- HOME CONTROLLER ----------");
+  // return "index.html";
+  // }
 
   @GetMapping("/protected")
   public String protecteds() {
