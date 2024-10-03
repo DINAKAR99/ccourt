@@ -6,6 +6,8 @@ import Signup from "./pages/public/Signup";
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import BarLoader from "react-spinners/BarLoader";
+import Protected from "./pages/public/Protected";
+import Dualogin from "./pages/public/Dualogin";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -30,6 +32,8 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/b/a" element={<Signup />} />
+              <Route path="/protected" element={<Protected />} />
+              <Route path="/dualogin" element={<Dualogin />} />
               <Route path="*" element={<Signup />} />
             </Routes>
           </MantineProvider>

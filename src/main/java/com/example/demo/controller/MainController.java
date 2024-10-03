@@ -16,11 +16,6 @@ public class MainController {
   // return "index.html";
   // }
 
-  @GetMapping("/protected")
-  public String protecteds() {
-    return "protected";
-  }
-
   @RequestMapping(value = { "/contactus" }, method = RequestMethod.GET)
   public String contactusPage(Model model) {
     System.out.println("---- CONTACTUS CONTROLLER ----------");

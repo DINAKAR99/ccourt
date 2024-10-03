@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,10 +46,27 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 							"Username or Password is incorrect !!.  You have " + leftLoginAttempts + " chances left.");
 
 					userLoginService.increaseFailedAttempts(user);
+					// Set response type to JSON
+					response.setContentType("application/json");
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Set HTTP status to 200
+					// Create a JSON response
+					PrintWriter out = response.getWriter();
+					out.print("{\"message\": \"Username or Password is incorrect !!.  You have \"" + leftLoginAttempts
+							+ "\" chances left.\"}");
+					out.flush();
+
 				} else {
 					userLoginService.lock(user);
 					exception = new LockedException("Your account has been locked due to 3 failed attempts."
 							+ " It will be unlocked after 30 Minutes.");
+					// Set response type to JSON
+					response.setContentType("application/json");
+					response.setStatus(423); // Set HTTP status to 200
+					// Create a JSON response
+					PrintWriter out = response.getWriter();
+					out.print(
+							"{\"message\": \"Your account has been locked due to 3 failed attempts. It will be unlocked after 30 Minutes.\"}");
+					out.flush();
 				}
 			} else if (!user.isAccountNonLocked()) {
 
@@ -63,6 +81,14 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 							"Username or Password is incorrect !!.  You have " + leftLoginAttempts + " chances left.");
 
 					userLoginService.increaseFailedAttempts(user);
+					// Set response type to JSON
+					response.setContentType("application/json");
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Set HTTP status to 200
+					// Create a JSON response
+					PrintWriter out = response.getWriter();
+					out.print("{\"message\": \"Username or Password is incorrect !!.  You have \"" + leftLoginAttempts
+							+ "\" chances left.\"}");
+					out.flush();
 
 				} else {
 
@@ -79,15 +105,22 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 								"Too many wrong attempts. You are locked out!. It will be unlocked after "
 										+ leftLockTimeInMin + " Minutes.");
 
+						// Set response type to JSON
+						response.setContentType("application/json");
+						response.setStatus(423); // Set HTTP status to 200
+						// Create a JSON response
+						PrintWriter out = response.getWriter();
+						out.print(
+								"{\"message\": \"Too many wrong attempts. You are locked out!. It will be unlocked after \""
+										+ leftLockTimeInMin
+										+ "\" chances left.\"}");
+						out.flush();
 					}
-
 				}
 			}
 
 		}
 
-		super.setDefaultFailureUrl(failureUrl);
-		super.onAuthenticationFailure(request, response, exception);
 	}
 
 }

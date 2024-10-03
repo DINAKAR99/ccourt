@@ -39,14 +39,15 @@ public class CaptchaAuthenticationFilter implements Filter {
             System.out.println("stored captha: " + captchaId);
             String userCaptcha = httpRequest.getParameter("captcha");
 
-            if ((userCaptcha == null) || !(userCaptcha.equals(captchaId))) {
-                System.out.println("d]yes--------");
-                // Redirect to CAPTCHA failure page
-                // Forward the request to the CAPTCHA failure controller
-                RequestDispatcher dispatcher = httpRequest.getRequestDispatcher("/captchafailure");
-                dispatcher.forward(httpRequest, httpResponse);
-                return;
-            }
+            // if ((userCaptcha == null) || !(userCaptcha.equals(captchaId))) {
+            // System.out.println("d]yes--------");
+            // // Redirect to CAPTCHA failure page
+            // // Forward the request to the CAPTCHA failure controller
+            // RequestDispatcher dispatcher =
+            // httpRequest.getRequestDispatcher("/captchafailure");
+            // dispatcher.forward(httpRequest, httpResponse);
+            // return;
+            // }
         }
 
         // Continue filter chain

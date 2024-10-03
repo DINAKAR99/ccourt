@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const checkUserExists = async (name) => {
   try {
@@ -21,8 +22,9 @@ const checkUserExists = async (name) => {
 
 const Login = () => {
   const [captcha, setCaptcha] = useState(generateCaptcha());
+  const [message, setMessage] = useState("");
   const canvasRef = useRef(null);
-
+  const navigate = useNavigate(); // Get the navigate function
   // Define the validation schema
   const schema = z.object({
     username: z
@@ -105,20 +107,42 @@ const Login = () => {
     try {
       const response = await axios.post(
         "http://localhost:8080/court/login",
-        data,
+        data, // Your login data
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
+          withCredentials: true,
         }
       );
-
-      console.log("Login successful:", response.data);
-      // Handle successful login (e.g., redirect, store token, etc.)
+    
+      if (response.status === 200) {
+        console.log("Login successful:", response.data);
+        navigate("/protected"); // Handle successful login, e.g., redirect or store token
+        setMessage("Login successful!"); 
+      }
     } catch (error) {
-      console.error("Error during login:", error);
-      // Handle error (e.g., show an error message to the user)
+      if (error.response) {
+        if (error.response.status === 401) {
+          console.error("Incorrect login attempt:", error.response.data);
+          setMessage("Incorrect login attempt."); 
+          // Handle incorrect login, show a message to the user
+        } else if (error.response.status === 423) {
+          console.error("Account locked:", error.response.data);
+          setMessage("Your account is locked.");
+        } 
+        else if (error.response.status === 409) {
+          console.error("DUAL locked:", error.response.data);
+          navigate("/dualogin");
+        }else {
+          setMessage("Unexpected error occurred.");
+        }
+        
+      } else {
+        console.error("Network or server error:", error.message);
+      }
     }
+    
   };
 
   return (
@@ -136,6 +160,11 @@ const Login = () => {
         }}
       >
         <h2 className="text-center">Login</h2>
+        {message && (
+        <div className="message-box">
+          {message}
+        </div>
+       )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">

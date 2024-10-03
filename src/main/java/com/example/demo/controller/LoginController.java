@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -141,8 +142,9 @@ public class LoginController {
     return mav;
   }
 
+  @ResponseBody
   @RequestMapping("/dualsessionlogin")
-  public ModelAndView dualsessionlogin(
+  public ResponseEntity<String> dualsessionlogin(
       ModelAndView mav,
       Model model,
       HttpServletRequest request) {
@@ -165,8 +167,8 @@ public class LoginController {
       userLoginDetailsRepository.save(user1);
     } else {
     }
-    mav.setViewName("/");
-    return mav;
+    return ResponseEntity.ok("{\"message\": \"Login successful!\"}");
+
   }
 
   @GetMapping(value = "/invalidCredentials")

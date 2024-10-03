@@ -4,6 +4,7 @@ import com.example.demo.model.User;
 import com.example.demo.model.UserLoginDetails;
 import com.example.demo.repository.UserLoginDetailsRepository;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,15 +57,22 @@ public class CustomLoginSuccessHandler
         String msg = "Too many wrong attempts. You are locked out!. It will be unlocked after " +
             leftLockTimeInMin +
             " Minutes.";
+        // Set response type to JSON
+        response.setContentType("application/json");
+        response.setStatus(423); // Set HTTP status to 200
+        // Create a JSON response
+        PrintWriter out = response.getWriter();
 
-        request.getSession().setAttribute("errorMessageForUsercaptcha", msg);
-        redirectStrategy.sendRedirect(request, response, "/loginPage");
+        out.print(
+            "{\"message\": \"Too many wrong attempts. You are locked out!. It will be unlocked after \""
+                + leftLockTimeInMin
+                + "\" chances left.\"}");
       } else {
         userLoginService.unlockWhenTimeExpired(user);
         String msg = "Due to,too many wrong attempts your account was locked earlier,now its unlock please login again";
 
         request.getSession().setAttribute("errorMessageForUsercaptcha", msg);
-        redirectStrategy.sendRedirect(request, response, "/loginPage");
+
       }
     } else {
       dbUserLoginDetails = userLoginDetailsRepository.findByUserId(user.getUserId());
@@ -92,13 +100,25 @@ public class CustomLoginSuccessHandler
         request
             .getSession()
             .setAttribute("userAgent", request.getHeader("user-agent").length());
+        // Set response type to JSON
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK); // Set HTTP status to 200
 
-        redirectStrategy.sendRedirect(request, response, "/protected");
+        // Create a JSON response
+        PrintWriter out = response.getWriter();
+        out.print("{\"message\": \"Login successful!\", \"user\": \"" + authentication.getName() + "\"}");
+        out.flush();
+
       } else if (dbUserLoginDetails.isLogin()) {
         System.out.println("dual login is detected please logout first");
-        redirectStrategy.sendRedirect(request, response, "/dualLogin");
+        // Create a JSON response
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_CONFLICT);
+        PrintWriter out = response.getWriter();
+        out.print("{\"message\": \" dual login is detected please logout first\"}");
+        out.flush();
       }
     }
-    super.onAuthenticationSuccess(request, response, authentication);
+
   }
 }
