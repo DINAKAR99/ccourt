@@ -56,6 +56,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 					out.flush();
 
 				} else {
+					userLoginService.increaseFailedAttempts(user);
 					userLoginService.lock(user);
 					exception = new LockedException("Your account has been locked due to 3 failed attempts."
 							+ " It will be unlocked after 30 Minutes.");

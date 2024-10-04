@@ -36,17 +36,8 @@ public class CaptchaAuthenticationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         // Read the JSON body
         System.out.println("the session is: " + httpRequest.getSession().getId());
-        StringBuilder stringBuilder = new StringBuilder();
-        try (BufferedReader bufferedReader = httpRequest.getReader()) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-        }
 
         // Convert JSON to a String (or parse it)
-        String jsonBody = stringBuilder.toString();
-        System.out.println("Request Body: " + jsonBody);
         String userCaptcha = null;
         String requestURI = httpRequest.getRequestURI();
         // Convert JSON to a Map
@@ -57,19 +48,11 @@ public class CaptchaAuthenticationFilter implements Filter {
             String captchaId = capthaStore.get(1);
             System.out.println("the uri " + requestURI);
             // Extract the captcha from the parsed JSON
-            if (jsonBody.isEmpty()) {
 
-                System.out.println("Received an empty request body.");
-            } else {
-                Map<String, Object> jsonMap = objectMapper.readValue(jsonBody,
-                        new TypeReference<Map<String, Object>>() {
-                        });
-                userCaptcha = (String) jsonMap.get("captcha");
-
-                System.out.println("user captha: " + userCaptcha);
-            }
             System.out.println("stored captha: " + captchaId);
+            // String userName = request.getParameter("username");
 
+            // System.out.println(" ::::::::username::::::::::::: " + userName);
             // if ((userCaptcha == null) || !(userCaptcha.equals(captchaId))) {
             // System.out.println("d]yes--------");
             // // Redirect to CAPTCHA failure page

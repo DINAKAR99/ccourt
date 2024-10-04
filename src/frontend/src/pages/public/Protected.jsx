@@ -4,7 +4,10 @@ import PublicLayout from '../../Layouts/PublicLayout'
 const Protected = () => {
   return (
     <PublicLayout>
-    <div>Protected</div>
+    <div className="text-center "><br />
+    <br />
+      <h4>YOU ARE ACCESSING PROTECTED CONTENT </h4>
+    </div>
     </PublicLayout>
   )
 }

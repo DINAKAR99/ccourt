@@ -1,5 +1,6 @@
 import React from "react";
 import PublicLayout from "./../../Layouts/PublicLayout";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   return (
@@ -15,7 +16,7 @@ const Signup = () => {
       >
         <div
           style={{
-            width: "600px",
+            width: "450px",
             margin: "auto",
             padding: "2rem",
             backgroundColor: "white",
@@ -69,7 +70,7 @@ const Signup = () => {
             </button>
           </form>
           <div className="text-center mt-3">
-            <a href="#">Already have an account? Login</a>
+          <Link to="/login">Already have an account? Login</Link>
           </div>
         </div>
       </div>

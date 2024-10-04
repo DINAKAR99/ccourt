@@ -31,10 +31,20 @@ const Dualogin = () => {
     
   return (
     <PublicLayout>
-        <div>Dualogin</div>
-        <div>yopu are logged in somewhere else </div>
-        <div><button onClick={onSubmit}>click here to login</button> </div>
-        <h6>this action will logout other existing session </h6>
+     <div class="container text-center mt-5 p-4 border rounded shadow-lg bg-light">
+    <div class="display-4 text-black mb-3 animate__animated animate__fadeInDown">Dual-Login</div>
+    <div class="alert alert-warning alert-dismissible fade show animate__animated animate__bounceIn">
+        <strong>Warning!</strong> You are logged in somewhere else.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="mb-4">
+        <button class="btn btn-success btn-lg px-5 py-3 animate__animated animate__pulse" onClick="onSubmit()">
+            <i class="fas fa-sign-in-alt"></i> Click here to login
+        </button>
+    </div>
+    <h6 class="text-muted animate__animated animate__fadeInUp">This action will log out the other existing session.</h6>
+</div>
+
     </PublicLayout>
   )
 }

@@ -105,9 +105,13 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
+      const params = new URLSearchParams();
+      params.append('username', data.username);
+      params.append('password', data.password);
+  
       const response = await axios.post(
         "http://localhost:8080/court/login",
-        data, // Your login data
+        params, // Use URLSearchParams
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -161,7 +165,7 @@ const Login = () => {
       >
         <h2 className="text-center">Login</h2>
         {message && (
-        <div className="message-box">
+        <div className="message-box text-center"  >
           {message}
         </div>
        )}
@@ -172,7 +176,7 @@ const Login = () => {
             </label>
             <input
               type="text"
-              className={`form-control ${errors.username ? "is-invalid" : "is-valid"}`}
+              className={`form-control ${errors.username ? "is-invalid" : ""}`}
               id="username"
               {...register("username")}
             />
@@ -186,7 +190,7 @@ const Login = () => {
             </label>
             <input
               type="password"
-              className={`form-control ${errors.password ? "is-invalid" : "is-valid"}`}
+              className={`form-control ${errors.password ? "is-invalid" : ""}`}
               id="password"
               {...register("password")}
             />
@@ -208,7 +212,7 @@ const Login = () => {
             <div className="d-flex align-items-center mt-3">
               <input
                 type="text"
-                className={`form-control ${errors.captcha ? "is-invalid" : "is-valid"}`}
+                className={`form-control ${errors.captcha ? "is-invalid" : ""}`}
                 id="captcha"
                 {...register("captcha")}
               />

@@ -157,7 +157,9 @@ public class LoginController {
     if (authentication != null && authentication.isAuthenticated()) {
       CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
       UserLoginDetails user1 = userLoginDetailsRepository.findByUserId(customUserDetails.getUser().getUserId());
-      SessionInformation sessionInformation = sessionRegistry.getSessionInformation(user1.getSessionId());
+      SessionInformation sessionInformation = sessionRegistry.getSessionInformation(user1.getSessionId());// shopuld not
+                                                                                                          // be null in
+                                                                                                          // session id
       if (sessionInformation != null && !sessionInformation.isExpired())
         sessionInformation.expireNow();
       // save new user login details
@@ -195,8 +197,9 @@ public class LoginController {
     return "login";
   }
 
+  @ResponseBody
   @GetMapping("/logoff")
-  public String logout(
+  public ResponseEntity<String> logout(
       HttpServletRequest request,
       HttpServletResponse response,
       Model model) {
@@ -208,8 +211,7 @@ public class LoginController {
       new SecurityContextLogoutHandler().logout(request, response, auth);
     }
 
-    model.addAttribute("message", "logout successful");
-    return "/";
+    return ResponseEntity.ok("{\"message\": \"Logut successful!\"}");
   }
 
   @GetMapping(value = "/userRegistration")

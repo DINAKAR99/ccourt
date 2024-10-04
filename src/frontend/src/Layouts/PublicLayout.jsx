@@ -17,7 +17,7 @@ const PublicLayout = ({ children }) => {
         }}
       >
         <div className="container text-center">
-          <span className="text-muted">© 2024 MyApp. All Rights Reserved.</span>
+          <span className="text-muted">© 2024 demo. All Rights Reserved.</span>
           <div className="mt-2">
             <Link className="text-muted mx-2" to="/about">
               About
