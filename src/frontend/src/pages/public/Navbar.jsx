@@ -1,4 +1,4 @@
-// Navbar.jsx
+import { Button } from "@mantine/core";
 import axios from "axios";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -6,28 +6,13 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const handleClick = async () => {
     try {
-      const params = new URLSearchParams();
-      params.append('username', data.username);
-      params.append('password', data.password);
-  
-      const response = await axios.get(
-        "http://localhost:8080/court/logout",
-          
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          withCredentials: true,
-        }
-      );
-    
+      const response = await axios.get("http://localhost:8080/court/logout");
+
       if (response.status === 200) {
         console.log("Logut successful:", response.data);
         navigate("/"); // Handle successful login, e.g., redirect or store token
-       }
-    } catch (error) {
-      
-    }
+      }
+    } catch (error) {}
   };
   return (
     <nav
@@ -88,7 +73,7 @@ const Navbar = () => {
                 About
               </Link>
             </li>
-             
+
             <li className="nav-item">
               <Link className="nav-link" to="/signup">
                 Signup
@@ -100,9 +85,9 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" onClick={handleClick}>
+              <a className="nav-link" to="#" onClick={handleClick}>
                 Logout
-              </Link>
+              </a>
             </li>
           </ul>
         </div>

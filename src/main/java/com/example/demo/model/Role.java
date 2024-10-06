@@ -17,6 +17,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "roles_mst")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -41,7 +43,7 @@ public class Role implements Serializable {
 
 	@Column(name = "delete_flag")
 	private boolean deleteFlag = false;
-
+	@JsonIgnore
 	@OneToMany(mappedBy = "role")
 	private Set<User> users;
 

@@ -23,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -44,9 +43,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 // @RequestMapping("/public")
 public class LoginController {
-  @Autowired
-  @Qualifier("sessionRegistry")
-  private SessionRegistry sessionRegistry;
 
   @Autowired
   private UserRepository userRepository;
@@ -59,16 +55,17 @@ public class LoginController {
 
   public static final ConcurrentHashMap<Integer, String> captchaStore = new ConcurrentHashMap<>();
 
-  @RequestMapping(value = { "/", "/{x:[\\w\\-]+}", "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
-  public String fallback(HttpServletRequest request) {
-    // Check if the request is for a static resource (assets)
-    String fullUrl = request.getRequestURL().toString();
+  // @RequestMapping(value = { "/", "/{x:[\\w\\-]+}",
+  // "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
+  // public String fallback(HttpServletRequest request) {
+  // // Check if the request is for a static resource (assets)
+  // String fullUrl = request.getRequestURL().toString();
 
-    System.out.println(fullUrl);
+  // System.out.println(fullUrl);
 
-    // For any other request, forward to index.html
-    return "index.html";
-  }
+  // // For any other request, forward to index.html
+  // return "index.html";
+  // }
 
   // @RequestMapping(value = "/signup", method = { RequestMethod.GET,
   // RequestMethod.POST })
@@ -149,26 +146,7 @@ public class LoginController {
       Model model,
       HttpServletRequest request) {
     // Get the current Authentication object
-    Authentication authentication = SecurityContextHolder
-        .getContext()
-        .getAuthentication();
 
-    // get th previoud logged in session info
-    if (authentication != null && authentication.isAuthenticated()) {
-      CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-      UserLoginDetails user1 = userLoginDetailsRepository.findByUserId(customUserDetails.getUser().getUserId());
-      SessionInformation sessionInformation = sessionRegistry.getSessionInformation(user1.getSessionId());// shopuld not
-                                                                                                          // be null in
-                                                                                                          // session id
-      if (sessionInformation != null && !sessionInformation.isExpired())
-        sessionInformation.expireNow();
-      // save new user login details
-      user1.setLoginIPAddress(request.getRemoteAddr());
-      user1.setLoginTime(LocalDateTime.now());
-      user1.setSessionId(request.getSession().getId());
-      userLoginDetailsRepository.save(user1);
-    } else {
-    }
     return ResponseEntity.ok("{\"message\": \"Login successful!\"}");
 
   }

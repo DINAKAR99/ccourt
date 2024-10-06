@@ -41,13 +41,9 @@ public class User implements Serializable {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @JsonIgnore
-    @NotNull
     @Column(name = "password", length = 60)
     private String password;
 
-    @JsonIgnore
-    @NotNull
     @Column(name = "real_password", length = 60)
     private String realPassword;
 
@@ -85,6 +81,18 @@ public class User implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToOne
+    @JsonIgnore
+    private RefreshToken refreshToken;
+
+    public RefreshToken getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
     @Transient
     private String captcha;

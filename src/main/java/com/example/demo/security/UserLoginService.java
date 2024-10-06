@@ -22,6 +22,7 @@ public class UserLoginService {
 	private UserRepository repo;
 
 	public void increaseFailedAttempts(User user) {
+		System.out.println("fwfew");
 		int newFailAttempts = user.getFailedAttempts() + 1;
 		repo.updateFailedAttempts(newFailAttempts, user.getUserId());
 	}
@@ -33,7 +34,7 @@ public class UserLoginService {
 	public void lock(User user) {
 		user.setAccountNonLocked(false);
 		user.setLockTime(new Date());
-
+		user.setFailedAttempts(MAX_FAILED_ATTEMPTS);
 		repo.save(user);
 	}
 

@@ -1,44 +1,23 @@
 package com.example.demo.configuration;
 
-import com.example.demo.listeners.MyHttpSessionListener;
-import com.example.demo.listeners.MyServletContextListener;
 import com.example.demo.repository.UserLoginDetailsRepository;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
-
-  @Autowired
-  private UserLoginDetailsRepository userLoginDetailsRepository;
-
-  @Bean
-  public ServletListenerRegistrationBean<MyHttpSessionListener> sessionCountListener() {
-    ServletListenerRegistrationBean<MyHttpSessionListener> listenerRegBean = new ServletListenerRegistrationBean<>();
-    listenerRegBean.setListener(
-      new MyHttpSessionListener(userLoginDetailsRepository)
-    );
-    return listenerRegBean;
-  }
-
-  @Bean
-  public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-    return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(
-      new HttpSessionEventPublisher()
-    );
-  }
-
-  @Bean
-  public ServletListenerRegistrationBean<MyServletContextListener> adminInfoListener() {
-    ServletListenerRegistrationBean<MyServletContextListener> listenerRegBean = new ServletListenerRegistrationBean<>();
-    listenerRegBean.setListener(new MyServletContextListener());
-    return listenerRegBean;
-  }
+public class WebConfig implements WebMvcConfigurer {
 
   @Bean(name = "messageSource")
   ResourceBundleMessageSource bundleMessageSource() {
@@ -52,4 +31,5 @@ public class WebConfig {
   public RestTemplate getRestTemplate() {
     return new RestTemplate();
   }
+
 }

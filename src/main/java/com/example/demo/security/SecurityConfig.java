@@ -1,25 +1,28 @@
 package com.example.demo.security;
 
-import com.example.demo.filter.CaptchaAuthenticationFilter;
+import com.example.demo.filter.JwtAuthFilter;
+import com.example.demo.helper.JwtAuthEntrypoint;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
@@ -28,89 +31,44 @@ public class SecurityConfig {
   private CustomUserDetailsService userDetailsService;
 
   @Autowired
-  private CustomAuthenticationFailureHandler loginFailureHandler;
+  private JwtAuthEntrypoint jwtAuthEntrypoint;
 
   @Autowired
-  private CustomLoginSuccessHandler loginSuccessHandler;
+  private JwtAuthFilter filter;
 
   @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    // .csrf(csrf -> csrf
-    // .ignoringAntMatchers("/api/**") // Disable CSRF for API endpoints
-    // )
-    http
-        .csrf(csrf -> csrf.disable())
-        // .headers(headers -> headers
-        // .contentSecurityPolicy("default-src 'self'")
-        // .and()
-        // .frameOptions().sameOrigin())
-        .authorizeRequests(requests -> requests
-            .antMatchers("/protected").authenticated()
-            .anyRequest()
-            .permitAll())
-        .addFilterBefore(
-            new CaptchaAuthenticationFilter(),
-            UsernamePasswordAuthenticationFilter.class)
-        .formLogin(form -> form
-            .loginPage("/loginPage")
-            .loginProcessingUrl("/login")
-            .failureHandler(loginFailureHandler)
-            .successHandler(loginSuccessHandler)
-            .permitAll())
-        .logout(logout -> logout
-            .invalidateHttpSession(true)
-            .clearAuthentication(true)
-            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-            .logoutSuccessUrl("/logoff")
-            .permitAll())
-        .exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler()))
-        .sessionManagement(session -> session
-            .sessionFixation()
-            .none() // Migrate session to prevent
-            // fixation attacks
-            .maximumSessions(1) // Max sessions allowed
-            .maxSessionsPreventsLogin(true) // Prevent new login if max sessions
-            // reached
-            .expiredUrl("/sessionExpired") // Redirect on session expiration
-            .sessionRegistry(sessionRegistry()) // Track session registry
-        );
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Specify frontend origin
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    configuration.setAllowCredentials(false); // Allow credentials
 
-    return http.build();
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
+
+  @Bean
+  SecurityFilterChain getfilterchain(HttpSecurity httpsecurity) throws Exception {
+
+    httpsecurity
+        .csrf(s -> s.disable()).cors(s -> s.configurationSource(corsConfigurationSource())).authorizeHttpRequests(
+            auth -> auth.antMatchers("/test").authenticated()
+                .antMatchers("/auth/login", "/user/create", "/auth/refresh", "/api/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
+        .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthEntrypoint))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    httpsecurity.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+    return httpsecurity.build();
+
   }
 
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  // @Bean
-  // HttpSessionEventPublisher httpSessionEventPublisher() {
-  // return new HttpSessionEventPublisher();
-  // }
-
-  // @Bean
-  // InMemoryUserDetailsManager userDetailsService() throws Exception {
-  // return new InMemoryUserDetailsManager(
-  // User.withUsername("user")
-  // .password(passwordEncoder().encode("password"))
-  // .roles("USER")
-  // .build(),
-  // User.withUsername("admin")
-  // .password(passwordEncoder().encode("admin"))
-  // .roles("ADMIN")
-  // .build());
-  // }
-
-  @Bean
-  AccessDeniedHandler accessDeniedHandler() {
-    AccessDeniedHandlerImpl accessDeniedHandler = new AccessDeniedHandlerImpl();
-    accessDeniedHandler.setErrorPage("/accessDenied.html");
-    return accessDeniedHandler;
-  }
-
-  @Bean
-  SessionRegistry sessionRegistry() {
-    return new SessionRegistryImpl(); // Used for session tracking
   }
 
   @Bean
@@ -120,14 +78,13 @@ public class SecurityConfig {
     return firewall;
   }
 
-  // @Bean
-  // public FilterRegistrationBean<XSSFilter> xssPreventFilter() {
-  // FilterRegistrationBean<XSSFilter> registrationBean = new
-  // FilterRegistrationBean<>();
-  // registrationBean.setFilter(new XSSFilter());
-  // registrationBean.addUrlPatterns("/*"); // Apply the filter to all requests
-  // return registrationBean;
-  // }
+  @Bean
+  AuthenticationManager getAuthManager(AuthenticationConfiguration builder)
+      throws Exception {
+
+    return builder.getAuthenticationManager();
+
+  }
 
   @Bean
   AuthenticationProvider authProvider() {

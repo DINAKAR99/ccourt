@@ -22,7 +22,7 @@ public class Restcontrol {
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
         } else {
 
-            return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("no user found", HttpStatus.NOT_FOUND);
         }
     }
 
