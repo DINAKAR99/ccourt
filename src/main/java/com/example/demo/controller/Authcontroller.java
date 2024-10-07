@@ -113,6 +113,9 @@ public class Authcontroller {
             }
 
             // If no lock issue, continue
+            if (user.getFailedAttempts() > 0) {
+                userLoginService.resetFailedAttempts(user.getUserId());
+            }
 
         } catch (BadCredentialsException e) {
             // Handle wrong username or password
