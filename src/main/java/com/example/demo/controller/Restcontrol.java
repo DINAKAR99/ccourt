@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class Restcontrol {
 
     // Example GET method
-    @GetMapping("/api/{name}")
+    @GetMapping("/public/api/{name}")
     public ResponseEntity<String> getExample(@PathVariable String name) {
         String responseBody = "dinakar";
         if (name.equals("dinakar")) {

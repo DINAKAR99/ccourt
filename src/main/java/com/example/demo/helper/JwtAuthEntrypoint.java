@@ -18,11 +18,8 @@ public class JwtAuthEntrypoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-        PrintWriter writer = response.getWriter();
-
-        writer.println("ACCESS DENIED !!" + authException.getMessage());
+        // Send a 401 Unauthorized response
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Invalid or missing token");
     }
 
 }

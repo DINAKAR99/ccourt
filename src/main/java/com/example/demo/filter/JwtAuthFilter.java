@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.demo.helper.JwtAuthEntrypoint;
 import com.example.demo.helper.JwtHelper;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -27,76 +28,83 @@ import io.jsonwebtoken.MalformedJwtException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    public Logger l1 = LoggerFactory.getLogger(OncePerRequestFilter.class);
+    private final Logger l1 = LoggerFactory.getLogger(OncePerRequestFilter.class);
+
     @Autowired
     private JwtHelper jwthelper;
+
     @Autowired
     private UserDetailsService userds;
 
-    @SuppressWarnings("unused")
+    @Autowired
+    private JwtAuthEntrypoint jwtAuthenticationEntryPoint;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
         l1.info("Header :{}", header);
+        // Get the request URI
+        String requestURI = request.getRequestURI();
+        l1.info("Request URI: {}", requestURI);
 
+        // Skip filtering if the path starts with "/public"
+        if (requestURI.startsWith("/court/public")) {
+            l1.info("Skipping filter for public path: {}", requestURI);
+            filterChain.doFilter(request, response);
+            return;
+        }
         String userName = null;
         String token = null;
 
         if (header != null && header.startsWith("Bearer")) {
             token = header.substring(7);
 
-            System.out.println(token);
-
             try {
                 userName = jwthelper.getUsernameFromToken(token);
-                System.out.println(userName);
+                l1.info("Extracted Username: {}", userName);
             } catch (IllegalArgumentException e) {
-
-                l1.info("illgal argument while fetching username");
-                e.printStackTrace();
+                l1.info("Illegal argument while fetching username");
+                jwtAuthenticationEntryPoint.commence(request, response, null); // Trigger unauthorized response
             } catch (ExpiredJwtException e) {
-                l1.info("Expired Jwt token");
-                e.printStackTrace();
+                l1.info("Expired JWT token");
+                jwtAuthenticationEntryPoint.commence(request, response, null); // Trigger unauthorized response
+                return; // Skip further processing
             } catch (MalformedJwtException e) {
-                l1.info(" Jwt token is malformed ,some changes were made inside token");
-                e.printStackTrace();
+                l1.info("JWT token is malformed");
+                jwtAuthenticationEntryPoint.commence(request, response, null); // Trigger unauthorized response
+                return; // Skip further processing
             } catch (Exception e) {
-                e.printStackTrace();
+                l1.error("Unexpected error while processing token", e);
+                jwtAuthenticationEntryPoint.commence(request, response, null); // Trigger unauthorized response
+                return;
             }
+        } else {
+            l1.info("Invalid header value");
+            jwtAuthenticationEntryPoint.commence(request, response, null); // Trigger unauthorized response
+            return;
         }
-
-        else {
-            l1.info("invalid header value");
-        }
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userByUsername = this.userds.loadUserByUsername(userName);
-            System.out.println(userByUsername);
-            System.out.println("---");
 
             Boolean validateToken = this.jwthelper.validateToken(token, userByUsername);
 
             if (validateToken) {
-                // set authentication
-
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userByUsername, validateToken, userByUsername.getAuthorities());
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
             } else {
-                l1.info("validation fails");
+                l1.info("Token validation failed");
+                jwtAuthenticationEntryPoint.commence(request, response, null); // Trigger unauthorized response
+                return;
             }
-
         }
 
         filterChain.doFilter(request, response);
-
     }
-
 }

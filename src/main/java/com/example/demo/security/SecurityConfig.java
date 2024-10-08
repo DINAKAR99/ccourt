@@ -55,7 +55,7 @@ public class SecurityConfig {
     httpsecurity
         .csrf(s -> s.disable()).cors(s -> s.configurationSource(corsConfigurationSource())).authorizeHttpRequests(
             auth -> auth.antMatchers("/test").authenticated()
-                .antMatchers("/auth/login", "/user/create", "/auth/refresh", "/api/**", "/logoff")
+                .antMatchers("/auth/login", "/user/create", "/auth/refresh", "/api/**", "/logoff", "/public/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated())

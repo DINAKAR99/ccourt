@@ -176,7 +176,7 @@ public class LoginController {
   }
 
   @ResponseBody
-  @GetMapping("/logoff")
+  @GetMapping("/public/logoff")
   public ResponseEntity<String> logout(
       HttpServletRequest request,
       HttpServletResponse response,

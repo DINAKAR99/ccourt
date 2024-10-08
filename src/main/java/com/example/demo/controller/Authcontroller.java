@@ -32,7 +32,7 @@ import com.example.demo.security.RefreshTokenService;
 import com.example.demo.security.UserLoginService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/public/auth")
 public class Authcontroller {
     @Autowired
     private UserRepository userRepository;
