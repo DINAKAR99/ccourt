@@ -268,4 +268,11 @@ public class LoginController {
   public String dualLogin(ModelAndView mav, Model model) {
     return "dualLogin";
   }
+
+  @GetMapping("/test")
+  public String getDetails() {
+
+    return "this is tesing url";
+
+  }
 }
