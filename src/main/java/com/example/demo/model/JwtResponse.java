@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class JwtResponse {
-    private String token;
-    public String user;
+    private String jwttoken;
+    public String username;
     public RefreshToken refreshtoken;
 }

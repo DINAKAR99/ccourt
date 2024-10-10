@@ -70,8 +70,8 @@ public class Authcontroller {
 
         // Create response object with token and refresh token
         JwtResponse jwtResponse = JwtResponse.builder()
-                .token(token)
-                .user(userByUsername.getUsername())
+                .jwttoken(token)
+                .username(userByUsername.getUsername())
                 .refreshtoken(refreshToken)
                 .build();
 

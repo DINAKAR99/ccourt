@@ -176,7 +176,7 @@ public class LoginController {
   }
 
   @ResponseBody
-  @GetMapping("/public/logoff")
+  @GetMapping("/logoff")
   public ResponseEntity<String> logout(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -270,6 +270,7 @@ public class LoginController {
   }
 
   @GetMapping("/test")
+  @ResponseBody
   public String getDetails() {
 
     return "this is tesing url";
