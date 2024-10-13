@@ -8,7 +8,7 @@ import com.example.demo.model.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-  public Role findByRoleId(Long roleId);
+  public Role findByRoleId(int roleId);
 
   List<Role> findAllByDeleteFlagOrderByRoleIdAsc(char deleteFlag);
 }

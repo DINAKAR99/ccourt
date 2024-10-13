@@ -1,8 +1,5 @@
 package com.example.demo.security;
 
-import com.example.demo.filter.JwtAuthFilter;
-import com.example.demo.helper.JwtAuthEntrypoint;
-
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.example.demo.filter.JwtAuthFilter;
+import com.example.demo.helper.JwtAuthEntrypoint;
+
 @Configuration
 public class SecurityConfig {
 
@@ -39,7 +39,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Specify frontend origin
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Specify frontend origin
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(false); //

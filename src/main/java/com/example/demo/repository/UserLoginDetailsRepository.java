@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UserLoginDetailsRepository
   extends JpaRepository<UserLoginDetails, Long> {
   UserLoginDetails findByUserId(Long userId);
+  UserLoginDetails findByUserName(String username);
 
   UserLoginDetails findBySessionId(String sessionId);
 

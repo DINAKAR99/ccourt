@@ -30,7 +30,7 @@ public class Role implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roleSequenceGenerator")
 	@SequenceGenerator(name = "roleSequenceGenerator", allocationSize = 1)
 	@Column(name = "role_id")
-	private Long roleId;
+	private int roleId;
 
 	@NotNull
 	@Size(min = 1, max = 50)
@@ -63,11 +63,11 @@ public class Role implements Serializable {
 		this.deleteFlag = deleteFlag;
 	}
 
-	public Long getRoleId() {
+	public int getRoleId() {
 		return roleId;
 	}
 
-	public void setRoleId(Long roleId) {
+	public void setRoleId(int roleId) {
 		this.roleId = roleId;
 	}
 

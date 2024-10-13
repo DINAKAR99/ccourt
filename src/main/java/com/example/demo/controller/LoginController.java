@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -184,11 +185,14 @@ public class LoginController {
     Authentication auth = SecurityContextHolder
         .getContext()
         .getAuthentication();
-
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
     if (auth != null) {
       new SecurityContextLogoutHandler().logout(request, response, auth);
+      UserLoginDetails user2 = userLoginDetailsRepository.findByUserName(auth.getName());
+      user2.setLogin(false);
+      user2.setLogoutTime(LocalDateTime.now());
     }
-
+     
     return ResponseEntity.ok("{\"message\": \"Logut successful!\"}");
   }
 
