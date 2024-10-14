@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -141,14 +142,18 @@ public class LoginController {
   }
 
   @ResponseBody
-  @RequestMapping("/dualsessionlogin")
-  public ResponseEntity<String> dualsessionlogin(
-      ModelAndView mav,
-      Model model,
+  @PostMapping("/public/dualsessionlogin")
+  public ResponseEntity<?> dualsessionlogin( @RequestParam(value = "user", required = false) String user,
       HttpServletRequest request) {
     // Get the current Authentication object
-
-    return ResponseEntity.ok("{\"message\": \"Login successful!\"}");
+    user = user.trim();
+    UserLoginDetails usr = userLoginDetailsRepository.findByUserName(user);
+    if (usr!=null) {
+        usr.setLogoutTime(LocalDateTime.now());
+        usr.setLogin(false); 
+        userLoginDetailsRepository.save(usr);
+    } 
+    return  new ResponseEntity<>("logout success",HttpStatus.OK);
 
   }
 
@@ -191,6 +196,7 @@ public class LoginController {
       UserLoginDetails user2 = userLoginDetailsRepository.findByUserName(auth.getName());
       user2.setLogin(false);
       user2.setLogoutTime(LocalDateTime.now());
+      userLoginDetailsRepository.save(user2);
     }
      
     return ResponseEntity.ok("{\"message\": \"Logut successful!\"}");

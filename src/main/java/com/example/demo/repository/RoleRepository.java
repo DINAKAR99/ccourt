@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.model.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Integer> {
   public Role findByRoleId(int roleId);
 
   List<Role> findAllByDeleteFlagOrderByRoleIdAsc(char deleteFlag);
