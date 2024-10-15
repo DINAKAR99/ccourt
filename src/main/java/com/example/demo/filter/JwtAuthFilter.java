@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +30,9 @@ import io.jsonwebtoken.MalformedJwtException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final Logger l1 = LoggerFactory.getLogger(OncePerRequestFilter.class);
-
+    
+    @Value("${app.welcome.message}")
+    private String welcomeMessage;
     @Autowired
     private JwtHelper jwthelper;
 
@@ -45,6 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
         l1.info("Header :{}", header);
+        l1.warn(welcomeMessage);
         // Get the request URI
         String requestURI = request.getRequestURI();
         l1.info("Request URI: {}", requestURI);
