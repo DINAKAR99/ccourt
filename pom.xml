@@ -190,6 +190,115 @@
 			<!-- react spring config -->
 		</plugins>
 	</build>
+<profiles>
+    <!-- Development profile -->
+    <profile>
+        <id>dev</id>
+        <build>
+            <plugins>
+                <!-- Frontend plugin for React -->
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>1.7.6</version>
+                    <executions>
+                        <!-- Install Node and npm -->
+                        <execution>
+                            <id>Install node and npm</id>
+                            <goals>
+                                <goal>install-node-and-npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <nodeVersion>v20.15.1</nodeVersion> <!-- Adjusted for qa environment -->
+                                <npmVersion>10.7.0</npmVersion>
+                            </configuration>
+                        </execution>
+                        <!-- Run npm install -->
+                        <execution>
+                            <id>npm install</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>install</arguments>
+                            </configuration>
+                        </execution>
+                        <!-- Run npm build for qa -->
+                        <execution>
+                            <id>npm build</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>run build:dev</arguments> <!-- npm build for QA -->
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <workingDirectory>src/frontend</workingDirectory>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+
+    <!-- QA profile -->
+    <profile>
+        <id>qa</id>
+        <build>
+            <plugins>
+                <!-- Frontend plugin for React -->
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>1.7.6</version>
+                    <executions>
+                        <!-- Install Node and npm -->
+                        <execution>
+                            <id>Install node and npm</id>
+                            <goals>
+                                <goal>install-node-and-npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <nodeVersion>v20.15.1</nodeVersion> <!-- Adjusted for qa environment -->
+                                <npmVersion>10.7.0</npmVersion>
+                            </configuration>
+                        </execution>
+                        <!-- Run npm install -->
+                        <execution>
+                            <id>npm install</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>install</arguments>
+                            </configuration>
+                        </execution>
+                        <!-- Run npm build for qa -->
+                        <execution>
+                            <id>npm build</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>run build</arguments> <!-- npm build for QA -->
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <workingDirectory>src/frontend</workingDirectory>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
 
 
 </project>

@@ -57,17 +57,17 @@ public class LoginController {
 
   public static final ConcurrentHashMap<Integer, String> captchaStore = new ConcurrentHashMap<>();
 
-  // @RequestMapping(value = { "/", "/{x:[\\w\\-]+}",
-  // "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
-  // public String fallback(HttpServletRequest request) {
-  // // Check if the request is for a static resource (assets)
-  // String fullUrl = request.getRequestURL().toString();
+  @RequestMapping(value = { "/", "/{x:[\\w\\-]+}",
+  "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
+  public String fallback(HttpServletRequest request) {
+  // Check if the request is for a static resource (assets)
+  String fullUrl = request.getRequestURL().toString();
 
-  // System.out.println(fullUrl);
+  System.out.println(fullUrl);
 
-  // // For any other request, forward to index.html
-  // return "index.html";
-  // }
+  // For any other request, forward to index.html
+  return "index.html";
+  }
 
   // @RequestMapping(value = "/signup", method = { RequestMethod.GET,
   // RequestMethod.POST })

@@ -54,7 +54,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         l1.info("Request URI: {}", requestURI);
 
         // Skip filtering if the path starts with "/public"
-        if (requestURI.startsWith("/court/public")) {
+        if (requestURI.startsWith("/court/public") || requestURI.startsWith("/court")) {
             l1.info("Skipping filter for public path: {}", requestURI);
             filterChain.doFilter(request, response);
             return;
