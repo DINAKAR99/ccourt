@@ -17,7 +17,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
-class HikariCPConfig {
+public class HikariCPConfig {
 
    @Value("${spring.datasource.url}")
    private String dataSourceUrl;

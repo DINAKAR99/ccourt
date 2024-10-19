@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -32,7 +32,7 @@
 		<java.version>17</java.version>
 		<node.version>v20.15.1</node.version>
 		<npm.version>10.7.0</npm.version>
- 
+
 	</properties>
 	<dependencies>
 
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -64,22 +64,22 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-		<!-- spring dependencies --> 
+		<!-- spring dependencies -->
 
 		<!-- others -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -94,7 +94,7 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.12.5</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -104,495 +104,92 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>0.12.5</version>
-		</dependency> 
-		<!-- others --> 
+		</dependency>
+		<!-- others -->
 
-	</dependencies> 
+	</dependencies>
 	<build>
 		<finalName>demo</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId> 
-			</plugin> 
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- react spring config -->
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.7.6</version>
+
+				<executions>
+					<execution>
+						<id>Install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<nodeVersion>v20.15.1</nodeVersion>
+							<npmVersion>10.7.0</npmVersion>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>npm build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<nodeVersion>v20.15.1</nodeVersion>
+					<workingDirectory>src/frontend</workingDirectory>
+				</configuration>
+
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>Copy my react app into my Spring Boot target static folder</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes/static</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/frontend/dist</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- react spring config -->
 		</plugins>
-	</build> 
-	<!-- profiles -->
-	<profiles>
-		<!-- dev -->
-		<profile>	
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build> 
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<includes>
-						<include>application-dev.properties</include> <!-- UAT-specific properties -->
-                    	</includes>
-						<filtering>true</filtering>
-					</resource>
-				</resources> 
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<copy
-											file="src/main/resources/application-dev.properties"
-											tofile="${project.build.outputDirectory}/application.properties" />
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin> 
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<update>true</update>
-							<url>${maven.tomcat.url}</url>
-							<path>/demo</path>
-							<username>${tomcat.username}</username>
-							<password>${tomcat.password}</password>
-						</configuration>
-					</plugin>
-					<!-- react spring config -->
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<version>1.7.6</version>
-						<configuration>
-							<workingDirectory>src/frontend</workingDirectory>
-							<installDirectory>target</installDirectory>
-						</configuration>  
-						<executions>
-							<execution>
-								<id>Install node and npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration> 
-									<nodeVersion>${node.version}</nodeVersion> 
-									<npmVersion>${npm.version}</npmVersion> 
-								</configuration>
-							</execution>
+	</build>
 
-							<execution>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>install</arguments>
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm build</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>run build:dev</arguments>
-								</configuration>
-							</execution>
-						</executions>  
-					</plugin> 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>Copy  react  build into  Spring Boot target static folder</id> 
-								<phase>process-resources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes/static</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/frontend/dist</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin> 
-					<!-- react spring config -->
-				</plugins>
-			</build>
-		</profile>
-		<!-- uat -->
-		<profile>
-			<id>uat</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build> 
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						 <includes>
-                        <include>application-uat.properties</include> <!-- UAT-specific properties -->
-                    	</includes>
-						<filtering>true</filtering>
-					</resource>
-				</resources> 
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<copy
-											file="src/main/resources/application-uat.properties"
-											tofile="${project.build.outputDirectory}/application.properties" />
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<update>true</update>
-							<url>${maven.tomcat.url}</url>
-							<path>/TSROW</path>
-							<username>${tomcat.username}</username>
-							<password>${tomcat.password}</password>
-						</configuration>
-					</plugin> 
-					<!-- react spring config -->
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<version>1.7.6</version>
-						<configuration>
-							<workingDirectory>src/frontend</workingDirectory>
-							<installDirectory>target</installDirectory>
-						</configuration>  
-						<executions>
-							<execution>
-								<id>Install node and npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration> 
-									<nodeVersion>${node.version}</nodeVersion> 
-									<npmVersion>${npm.version}</npmVersion> 
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>install</arguments>
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm build</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>run build:uat</arguments>
-								</configuration>
-							</execution>
-						</executions>  
-					</plugin> 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>Copy  react  build into  Spring Boot target static folder</id> 
-								<phase>process-resources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes/static</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/frontend/dist</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin> 
-					<!-- react spring config -->
-				</plugins>
-			</build>
-		</profile> 
-		<!-- qa -->
-		<profile>
-			<id>qa</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build> 
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<includes>
-						<include>application-qa.properties</include> <!-- UAT-specific properties -->
-                    	</includes>
-						<filtering>true</filtering>
-					</resource>
-				</resources> 
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<copy file="src/main/resources/application-qa.properties"
-											tofile="${project.build.outputDirectory}/application.properties" />
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<update>true</update>
-							<url>${maven.tomcat.url}</url>
-							<path>/TSROW</path>
-							<username>${tomcat.username}</username>
-							<password>${tomcat.password}</password>
-						</configuration>
-					</plugin>
-					<!-- react spring config -->
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<version>1.7.6</version>
-						<configuration>
-							<workingDirectory>src/frontend</workingDirectory>
-							<installDirectory>target</installDirectory>
-						</configuration>  
-						<executions>
-							<execution>
-								<id>Install node and npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration> 
-									<nodeVersion>${node.version}</nodeVersion> 
-									<npmVersion>${npm.version}</npmVersion> 
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>install</arguments>
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm build</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>run build:qa</arguments>
-								</configuration>
-							</execution>
-						</executions>  
-					</plugin> 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>Copy  react  build into  Spring Boot target static folder</id> 
-								<phase>process-resources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes/static</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/frontend/dist</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin> 
-					<!-- react spring config -->
-				</plugins>
-			</build>
-		</profile>
-		<!-- prod -->
-		<profile>
-			<id>prod</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build> 
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<includes>
-						   <include>application-prod.properties</include> <!-- UAT-specific properties -->
-                    	</includes>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
-
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<copy
-											file="src/main/resources/application-prod.properties"
-											tofile="${project.build.outputDirectory}/application.properties" />
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<update>true</update>
-							<url>${maven.tomcat.url}</url>
-							<path>/demo</path>
-							<username>${tomcat.username}</username>
-							<password>${tomcat.password}</password>
-						</configuration>
-					</plugin> 
-					<!-- react spring config -->
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<version>1.7.6</version>
-						<configuration>
-							<workingDirectory>src/frontend</workingDirectory>
-							<installDirectory>target</installDirectory>
-						</configuration>  
-						<executions>
-							<execution>
-								<id>Install node and npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration> 
-									<nodeVersion>${node.version}</nodeVersion> 
-									<npmVersion>${npm.version}</npmVersion> 
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>install</arguments>
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm build</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>run build:prod</arguments>
-								</configuration>
-							</execution>
-						</executions>  
-					</plugin> 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>Copy  react  build into  Spring Boot target static folder</id> 
-								<phase>process-resources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes/static</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/frontend/dist</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin> 
-					<!-- react spring config -->
-				</plugins>
-			</build>
-		</profile>
-
-	</profiles>
-	<!-- profiles -->
 
 </project>
