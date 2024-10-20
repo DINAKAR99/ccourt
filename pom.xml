@@ -116,134 +116,135 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!-- react spring config -->
-			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.7.6</version>
-
-				<executions>
-					<execution>
-						<id>Install node and npm</id>
-						<goals>
-							<goal>install-node-and-npm</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<nodeVersion>v20.15.1</nodeVersion>
-							<npmVersion>10.7.0</npmVersion>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>npm install</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<arguments>install</arguments>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>npm build</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<arguments>run build</arguments>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<nodeVersion>v20.15.1</nodeVersion>
-					<workingDirectory>src/frontend</workingDirectory>
-				</configuration>
-
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>Copy my react app into my Spring Boot target static folder</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/classes/static</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/frontend/dist</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- react spring config -->
+		
 		</plugins>
 	</build>
+	
 <profiles>
     <!-- Development profile -->
-    <profile>
-        <id>dev</id>
-        <build>
-            <plugins>
-                <!-- Frontend plugin for React -->
-                <plugin>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.7.6</version>
-                    <executions>
-                        <!-- Install Node and npm -->
-                        <execution>
-                            <id>Install node and npm</id>
-                            <goals>
-                                <goal>install-node-and-npm</goal>
-                            </goals>
-                            <phase>generate-resources</phase>
-                            <configuration>
-                                <nodeVersion>v20.15.1</nodeVersion> <!-- Adjusted for qa environment -->
-                                <npmVersion>10.7.0</npmVersion>
-                            </configuration>
-                        </execution>
-                        <!-- Run npm install -->
-                        <execution>
-                            <id>npm install</id>
-                            <goals>
-                                <goal>npm</goal>
-                            </goals>
-                            <phase>generate-resources</phase>
-                            <configuration>
-                                <arguments>install</arguments>
-                            </configuration>
-                        </execution>
-                        <!-- Run npm build for qa -->
-                        <execution>
-                            <id>npm build</id>
-                            <goals>
-                                <goal>npm</goal>
-                            </goals>
-                            <phase>generate-resources</phase>
-                            <configuration>
-                                <arguments>run build:dev</arguments> <!-- npm build for QA -->
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <workingDirectory>src/frontend</workingDirectory>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
+	<profile>
+		<id>dev</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+		<build>
+			<resources>
+				<resource>
+					<directory>src/main/resources</directory>
+					<excludes>
+						<exclude>application-dev.properties</exclude> <exclude>application-qa.properties</exclude>
+						<exclude>application-uat.properties</exclude> <exclude>application-prod.properties</exclude>
+						 
+					</excludes>
+					<filtering>true</filtering>
+				</resource>
+			</resources>
+
+			<plugins>
+				<!-- Frontend plugin for React -->
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>1.7.6</version>
+					<executions>
+						<!-- Install Node and npm -->
+						<execution>
+							<id>Install node and npm</id>
+							<goals>
+								<goal>install-node-and-npm</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<nodeVersion>v20.15.1</nodeVersion> <!-- Adjusted for qa environment -->
+								<npmVersion>10.7.0</npmVersion>
+							</configuration>
+						</execution>
+						<!-- Run npm install -->
+						<execution>
+							<id>npm install</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<arguments>install</arguments>
+							</configuration>
+						</execution>
+						<!-- Run npm build for qa -->
+						<execution>
+							<id>npm build</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<arguments>run build:dev</arguments> <!-- npm build for QA -->
+							</configuration>
+						</execution>
+					</executions>
+					<configuration>
+						<workingDirectory>src/frontend</workingDirectory>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>Copy my React app into my Spring Boot target static folder</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>target/classes/static</outputDirectory>
+								<resources>
+									<resource>
+										<directory>src/frontend/dist</directory>
+										<filtering>true</filtering>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- react spring config -->
+				<plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<executions>
+						<execution>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<tasks>
+									<copy
+											file="src/main/resources/application-dev.properties"
+											tofile="${project.build.outputDirectory}/application.properties" />
+								</tasks>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.2</version>
+					<configuration>
+						<update>true</update>
+						<url>${maven.tomcat.url}</url>
+						<path>/TSROW</path>
+						<username>${tomcat.username}</username>
+						<password>${tomcat.password}</password>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
 
     <!-- QA profile -->
     <profile>
