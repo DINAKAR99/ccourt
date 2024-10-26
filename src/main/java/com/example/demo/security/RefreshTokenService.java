@@ -14,7 +14,7 @@ import com.example.demo.repository.UserRepository;
 @Service
 public class RefreshTokenService {
 
-    public long refreshTokenValidity = 30 * 60 * 1000;
+    public long refreshTokenValidity = 30 * 60 * 1000; // min::second::millisec
 
     @Autowired
     UserRepository userRepo;
