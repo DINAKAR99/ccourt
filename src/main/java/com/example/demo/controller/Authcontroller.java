@@ -66,7 +66,8 @@ public class Authcontroller {
     private RefreshTokenService refreshTokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid  JwtRequest jwtRequest, BindingResult bindingResult, HttpServletRequest request,
+    public ResponseEntity<?> login(@RequestBody @Valid JwtRequest jwtRequest, BindingResult bindingResult,
+            HttpServletRequest request,
             HttpServletResponse response) throws IOException, ServletException {
 
         // If there are validation errors, return bad request with error messages
@@ -86,22 +87,22 @@ public class Authcontroller {
         if (failureResponse != null) {
             return failureResponse; // Return early if authentication failed
         }
-        UserLoginDetails u1=userLoginDetailsRepository.findByUserName(jwtRequest.getUser());
-        if (u1!=null && u1.isLogin()) {
-            Duallogin duallogin=new Duallogin();
+        UserLoginDetails u1 = userLoginDetailsRepository.findByUserName(jwtRequest.getUser());
+        if (u1 != null && u1.isLogin()) {
+            Duallogin duallogin = new Duallogin();
             duallogin.setInfo("dual login ");
             duallogin.setName(jwtRequest.getUser());
-            return new ResponseEntity<>(  duallogin, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(duallogin, HttpStatus.BAD_REQUEST);
         }
         UserLoginDetails user2 = userLoginDetailsRepository.findByUserName(jwtRequest.getUser());
-        if (user2 ==null) {
-            user2=new UserLoginDetails();
+        if (user2 == null) {
+            user2 = new UserLoginDetails();
             user2.setUserId(userRepository.findByUserName(jwtRequest.getUser()).getUserId());
         }
         user2.setUserName(jwtRequest.getUser());
         user2.setLogin(true);
         user2.setLoginIPAddress(request.getRemoteAddr());
-        user2.setLogoutTime(null); 
+        user2.setLogoutTime(null);
         user2.setLoginTime(LocalDateTime.now());
         userLoginDetailsRepository.save(user2);
 
@@ -112,24 +113,25 @@ public class Authcontroller {
         // Generate refresh token
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userByUsername.getUsername());
 
+        User user1 = userRepository.findByUserName(jwtRequest.getUser());
         // Create response object with token and refresh token
         JwtResponse jwtResponse = JwtResponse.builder()
                 .jwttoken(token)
                 .username(userByUsername.getUsername())
                 .refreshtoken(refreshToken)
+                .role(user1.getRole().getRoleId())
                 .build();
 
         System.out.println(jwtResponse.toString());
 
-        
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signin(@RequestBody @Valid Signup details, BindingResult bindingResult,HttpServletRequest request,
-    HttpServletResponse response) {
-        
-        
+    public ResponseEntity<String> signin(@RequestBody @Valid Signup details, BindingResult bindingResult,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
         // If there are validation errors, return bad request with error messages
         if (bindingResult.hasErrors()) {
             StringBuilder errors = new StringBuilder();
@@ -144,26 +146,26 @@ public class Authcontroller {
 
         // Process sign-in logic here
 
-        //saving
+        // saving
         User user = new User();
         user.setUserName(details.getUser());
         user.setUserEmail(details.getEmail());
         user.setUserMobile(details.getPassword());
-        user.setPassword( passwordEncoder.encode(details.getPassword()));
+        user.setPassword(passwordEncoder.encode(details.getPassword()));
         user.setRealPassword(details.getPassword());
         user.setCreatedIpAddress(request.getRemoteAddr());
-        Role role = roleRepository.findByRoleId(3); 
+        Role role = roleRepository.findByRoleId(3);
         user.setRole(role);
         userRepository.save(user);
         return new ResponseEntity<>("Signup successfull", HttpStatus.OK);
     }
 
-  @GetMapping("checkuser/{name}")
+    @GetMapping("checkuser/{name}")
     public ResponseEntity<String> checkUser(@PathVariable String name) {
-        User byUserName=null;
-        byUserName= userRepository.findByUserName(name);
-         
-        if ( byUserName!=null ) {
+        User byUserName = null;
+        byUserName = userRepository.findByUserName(name);
+
+        if (byUserName != null) {
 
             return new ResponseEntity<>("user found", HttpStatus.OK);
         } else {
@@ -171,7 +173,6 @@ public class Authcontroller {
             return new ResponseEntity<>("no user found", HttpStatus.NOT_FOUND);
         }
     }
-
 
     private ResponseEntity<?> doAuthenticate(String username, String password, HttpServletRequest request,
             HttpServletResponse response) throws IOException, ServletException {
@@ -266,5 +267,4 @@ public class Authcontroller {
         return null;
     }
 
-  
 }

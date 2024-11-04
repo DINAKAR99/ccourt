@@ -58,15 +58,15 @@ public class LoginController {
   public static final ConcurrentHashMap<Integer, String> captchaStore = new ConcurrentHashMap<>();
 
   @RequestMapping(value = { "/", "/{x:[\\w\\-]+}",
-  "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
+      "/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}", "/error" })
   public String fallback(HttpServletRequest request) {
-  // Check if the request is for a static resource (assets)
-  String fullUrl = request.getRequestURL().toString();
+    // Check if the request is for a static resource (assets)
+    String fullUrl = request.getRequestURL().toString();
 
-  System.out.println(fullUrl);
+    System.out.println(fullUrl);
 
-  // For any other request, forward to index.html
-  return "index.html";
+    // For any other request, forward to index.html
+    return "index.html";
   }
 
   // @RequestMapping(value = "/signup", method = { RequestMethod.GET,
@@ -143,17 +143,17 @@ public class LoginController {
 
   @ResponseBody
   @PostMapping("/public/dualsessionlogin")
-  public ResponseEntity<?> dualsessionlogin( @RequestParam(value = "user", required = false) String user,
+  public ResponseEntity<?> dualsessionlogin(@RequestParam(value = "user", required = false) String user,
       HttpServletRequest request) {
     // Get the current Authentication object
     user = user.trim();
     UserLoginDetails usr = userLoginDetailsRepository.findByUserName(user);
-    if (usr!=null) {
-        usr.setLogoutTime(LocalDateTime.now());
-        usr.setLogin(false); 
-        userLoginDetailsRepository.save(usr);
-    } 
-    return  new ResponseEntity<>("logout success",HttpStatus.OK);
+    if (usr != null) {
+      usr.setLogoutTime(LocalDateTime.now());
+      usr.setLogin(false);
+      userLoginDetailsRepository.save(usr);
+    }
+    return new ResponseEntity<>("logout success", HttpStatus.OK);
 
   }
 
@@ -182,23 +182,24 @@ public class LoginController {
   }
 
   @ResponseBody
-  @GetMapping("/logoff")
+  @PostMapping("/logoff")
   public ResponseEntity<String> logout(
+      @RequestParam(value = "username", required = true) String username,
       HttpServletRequest request,
       HttpServletResponse response,
       Model model) {
-    Authentication auth = SecurityContextHolder
-        .getContext()
-        .getAuthentication();
-        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
-    if (auth != null) {
-      new SecurityContextLogoutHandler().logout(request, response, auth);
-      UserLoginDetails user2 = userLoginDetailsRepository.findByUserName(auth.getName());
-      user2.setLogin(false);
-      user2.setLogoutTime(LocalDateTime.now());
-      userLoginDetailsRepository.save(user2);
-    }
-     
+    // Authentication auth = SecurityContextHolder
+    // .getContext()
+    // .getAuthentication();
+    // CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+    // if (auth != null) {
+    // new SecurityContextLogoutHandler().logout(request, response, auth);
+    UserLoginDetails user2 = userLoginDetailsRepository.findByUserName(username);
+    user2.setLogin(false);
+    user2.setLogoutTime(LocalDateTime.now());
+    userLoginDetailsRepository.save(user2);
+    // }
+
     return ResponseEntity.ok("{\"message\": \"Logut successful!\"}");
   }
 

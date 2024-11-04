@@ -8,5 +8,6 @@ import lombok.Data;
 public class JwtResponse {
     private String jwttoken;
     public String username;
+    public int role;
     public RefreshToken refreshtoken;
 }
