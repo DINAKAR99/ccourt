@@ -31,4 +31,9 @@ public class TaskRequest {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+
+    @Override
+    public String toString() {
+        return "TaskRequest [projectCode=" + projectCode + ", memberId=" + memberId + ", tasks=" + tasks + "]";
+    }
 }

@@ -8,11 +8,12 @@ import com.example.demo.dto.Task;
 import com.example.demo.dto.TaskRequest;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/public/api")
 public class TaskController {
 
     @PostMapping("/tasks")
     public ResponseEntity<String> receiveTasks(@RequestBody TaskRequest request) {
+        System.out.println(request.toString());
         String projectCode = request.getProjectCode();
         String memberId = request.getMemberId();
         List<Task> tasks = request.getTasks();
