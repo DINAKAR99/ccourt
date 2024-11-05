@@ -118,6 +118,7 @@ public class Authcontroller {
         JwtResponse jwtResponse = JwtResponse.builder()
                 .jwttoken(token)
                 .username(userByUsername.getUsername())
+                .userid(user1.getUserId())
                 .refreshtoken(refreshToken)
                 .role(user1.getRole().getRoleId())
                 .build();
