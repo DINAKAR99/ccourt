@@ -59,7 +59,7 @@ public class TaskController {
         LocalDate today = LocalDate.now();
 
         // Fetch tasks for the logged-in user
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> tasks = taskRepository.findTasksByProjectCodeOrdered();
 
         return ResponseEntity.ok(tasks);
     }

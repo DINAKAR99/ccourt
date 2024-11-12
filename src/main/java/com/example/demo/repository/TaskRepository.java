@@ -22,4 +22,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT COUNT(t) FROM Task t WHERE t.projectCode = :projectCode")
     Long countTasksByProjectCode(@Param("projectCode") String projectCode);
 
+    @Query("SELECT t FROM Task t ORDER BY t.memberId ASC, t.fromDate ASC")
+    List<Task> findTasksByProjectCodeOrdered();
+
 }
