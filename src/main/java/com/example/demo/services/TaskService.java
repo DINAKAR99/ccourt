@@ -22,11 +22,17 @@ public class TaskService {
     public List<Task> saveAllTasks(List<Task> tasks) {
         return taskRepository.saveAll(tasks);
     }
-     public List<Task> getTasksForToday(String memberId) {
+
+    public List<Task> getTasksForToday(String memberId) {
         return taskRepository.findTasksForToday(memberId, LocalDate.now());
     }
+
     public List<Task> findTasksByDateRange(String memberId, LocalDate fromDate, LocalDate toDate) {
         return taskRepository.findTasksByDateRange(memberId, fromDate, toDate);
     }
-    
+
+    public Long getTaskCountByProjectCode(String projectCode) {
+        return taskRepository.countTasksByProjectCode(projectCode);
+    }
+
 }

@@ -12,14 +12,91 @@ public class Task {
     private Long id;
 
     private String projectCode;
+    private String moduleId; // Added moduleId field
     private String memberId;
     private String taskId;
     private LocalDate fromDate;
     private LocalDate toDate;
-    private String subtaskId;
-    private String description; // Add this field to your Task model
+    private LocalDate actualfromDate;
+    private LocalDate actualtoDate;
+    private String subtaskId = "0"; // Default value for subtaskId
+    private String subtaskDesc = ""; // Field to hold the subtask description
+    private String description; // Task description
 
-    // Getters and Setters
+    // New fields
+    private String plannedHours; // Planned hours in "X hours Y minutes" format
+    private String actualHours; // Actual hours in "X hours Y minutes" format
+    private String category; // Task category (e.g., "Development", "Testing")
+    private String priority; // Task priority (e.g., "Low", "Medium", "High")
+    private String complexity; // Task complexity (e.g., "Low", "Medium", "High")
+    private String status; // Task status (e.g., "Open", "In Progress", "Completed")
+
+    // Getters and Setters for the new fields
+    public String getSubtaskDesc() {
+        return subtaskDesc;
+    }
+
+    public void setSubtaskDesc(String subtaskDesc) {
+        this.subtaskDesc = subtaskDesc;
+    }
+
+    public String getPlannedHours() {
+        return plannedHours;
+    }
+
+    public void setPlannedHours(String plannedHours) {
+        this.plannedHours = plannedHours;
+    }
+
+    public String getActualHours() {
+        return actualHours;
+    }
+
+    public void setActualHours(String actualHours) {
+        this.actualHours = actualHours;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getComplexity() {
+        return complexity;
+    }
+
+    public void setComplexity(String complexity) {
+        this.complexity = complexity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(String moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    // Getters and Setters for the existing fields
     public Long getId() {
         return id;
     }
@@ -83,4 +160,21 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public LocalDate getActualfromDate() {
+        return actualfromDate;
+    }
+
+    public void setActualfromDate(LocalDate actualfromDate) {
+        this.actualfromDate = actualfromDate;
+    }
+
+    public LocalDate getActualtoDate() {
+        return actualtoDate;
+    }
+
+    public void setActualtoDate(LocalDate actualtoDate) {
+        this.actualtoDate = actualtoDate;
+    }
+
 }

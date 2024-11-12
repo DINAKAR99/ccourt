@@ -1,15 +1,12 @@
 package com.example.demo.controller;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List; // For List
 
 import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.DateRangeRequest;
 import com.example.demo.dto.Task;
 import com.example.demo.dto.TaskRequest;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.services.TaskService;
 
 @RestController
 @RequestMapping("/public/api")
 public class TaskController {
 
-    
     private final TaskService taskService;
-
     @Autowired
+    private TaskRepository taskRepository;
+
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -42,35 +40,52 @@ public class TaskController {
 
         return ResponseEntity.ok("Tasks received and saved successfully!");
     }
-  @PostMapping("/tasks/today")
-public ResponseEntity<List<Task>> getTodayTasksForLoggedInUser() {
-    // Retrieve the authenticated user's details from the SecurityContext
-    // Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
 
-    // if (authentication == null || !authentication.isAuthenticated()) {
-    //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
-    // }
+    @PostMapping("/tasks/today")
+    public ResponseEntity<List<Task>> getTodayTasksForLoggedInUser() {
+        // Retrieve the authenticated user's details from the SecurityContext
+        // Authentication authentication = (Authentication)
+        // SecurityContextHolder.getContext().getAuthentication();
 
-    // String memberId = authentication.getName(); // Assuming memberId is stored as the principal name
+        // if (authentication == null || !authentication.isAuthenticated()) {
+        // return
+        // ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
+        // }
 
-    // Get today's date
-    LocalDate today = LocalDate.now();
+        // String memberId = authentication.getName(); // Assuming memberId is stored as
+        // the principal name
 
-    // Fetch tasks for the logged-in user
-    List<Task> tasks = taskService.getTasksForToday("M001");
+        // Get today's date
+        LocalDate today = LocalDate.now();
 
-    return ResponseEntity.ok(tasks);
+        // Fetch tasks for the logged-in user
+        List<Task> tasks = taskRepository.findAll();
+
+        return ResponseEntity.ok(tasks);
+    }
+
+    @PostMapping("/tasks/range")
+    public ResponseEntity<List<Task>> getTasksByDateRange(@RequestBody DateRangeRequest request) {
+        LocalDate fromDate = request.getFromDate();
+        LocalDate toDate = request.getToDate();
+        // String memberId =
+        // SecurityContextHolder.getContext().getAuthentication().getName(); // Assuming
+        // you have member ID from JWT
+
+        List<Task> tasks = taskService.findTasksByDateRange("M001", fromDate, toDate);
+
+        return ResponseEntity.ok(tasks);
+    }
+
+    // Endpoint to get the task count by projectCode
+
+    @GetMapping("/tasks/count")
+    public ResponseEntity<Long> getTaskCountByProjectCode(@RequestParam String projectCode) {
+        Long taskCount = taskService.getTaskCountByProjectCode(projectCode);
+        if (taskCount != null) {
+            return ResponseEntity.ok(taskCount); // Return task count with HTTP 200
+        } else {
+            return ResponseEntity.notFound().build(); // Return HTTP 404 if not found
+        }
+    }
 }
-@PostMapping("/tasks/range")
-public ResponseEntity<List<Task>> getTasksByDateRange(@RequestBody DateRangeRequest request) {
-    LocalDate fromDate = request.getFromDate();
-    LocalDate toDate = request.getToDate();
-    // String memberId = SecurityContextHolder.getContext().getAuthentication().getName(); // Assuming you have member ID from JWT
-
-    List<Task> tasks = taskService.findTasksByDateRange("M001", fromDate, toDate);
-    
-    return ResponseEntity.ok(tasks);
-}
-
-}
-

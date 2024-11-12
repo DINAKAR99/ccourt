@@ -14,7 +14,12 @@ import com.example.demo.dto.Task;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t.memberId = :memberId AND t.fromDate = :currentDate")
     List<Task> findTasksForToday(@Param("memberId") String memberId, @Param("currentDate") LocalDate currentDate);
-    
+
     @Query("SELECT t FROM Task t WHERE t.fromDate >= :fromDate AND t.toDate <= :toDate AND t.memberId = :memberId")
-    List<Task> findTasksByDateRange(@Param("memberId") String memberId, @Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate);
+    List<Task> findTasksByDateRange(@Param("memberId") String memberId, @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.projectCode = :projectCode")
+    Long countTasksByProjectCode(@Param("projectCode") String projectCode);
+
 }
