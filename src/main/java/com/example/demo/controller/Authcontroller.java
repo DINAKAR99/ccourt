@@ -150,12 +150,13 @@ public class Authcontroller {
         // saving
         User user = new User();
         user.setUserName(details.getUser());
+        user.setEmpid(Integer.parseInt(details.getEmpid()));
         user.setUserEmail(details.getEmail());
         user.setUserMobile(details.getPassword());
         user.setPassword(passwordEncoder.encode(details.getPassword()));
         user.setRealPassword(details.getPassword());
         user.setCreatedIpAddress(request.getRemoteAddr());
-        Role role = roleRepository.findByRoleId(3);
+        Role role = roleRepository.findByRoleId(1);
         user.setRole(role);
         userRepository.save(user);
         return new ResponseEntity<>("Signup successfull", HttpStatus.OK);
