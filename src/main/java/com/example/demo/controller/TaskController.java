@@ -43,19 +43,7 @@ public class TaskController {
 
     @PostMapping("/tasks/today")
     public ResponseEntity<List<Task>> getTodayTasksForLoggedInUser() {
-        // Retrieve the authenticated user's details from the SecurityContext
-        // Authentication authentication = (Authentication)
-        // SecurityContextHolder.getContext().getAuthentication();
-
-        // if (authentication == null || !authentication.isAuthenticated()) {
-        // return
-        // ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
-        // }
-
-        // String memberId = authentication.getName(); // Assuming memberId is stored as
-        // the principal name
-
-        // Get today's date
+         
         LocalDate today = LocalDate.now();
 
         // Fetch tasks for the logged-in user

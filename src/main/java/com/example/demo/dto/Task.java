@@ -17,6 +17,7 @@ public class Task {
     private String taskId;
     private LocalDate fromDate;
     private LocalDate toDate;
+    private LocalDate taskAssigned=LocalDate.now();
     private LocalDate actualfromDate;
     private LocalDate actualtoDate;
     private String subtaskId = "0"; // Default value for subtaskId
@@ -175,6 +176,14 @@ public class Task {
 
     public void setActualtoDate(LocalDate actualtoDate) {
         this.actualtoDate = actualtoDate;
+    }
+
+    public LocalDate getTaskAssigned() {
+        return taskAssigned;
+    }
+
+    public void setTaskAssigned(LocalDate taskAssigned) {
+        this.taskAssigned = taskAssigned;
     }
 
 }

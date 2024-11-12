@@ -77,6 +77,8 @@ public class User implements Serializable {
 
     @Column(name = "failed_attempts")
     private int failedAttempts = 0;
+    @Column(name = "employee_id")
+    private int empid = 0;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
@@ -260,6 +262,14 @@ public class User implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public int getEmpid() {
+        return empid;
+    }
+
+    public void setEmpid(int empid) {
+        this.empid = empid;
     }
 
 }
