@@ -15,7 +15,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t.memberId = :memberId AND t.fromDate = :currentDate")
     List<Task> findTasksForToday(@Param("memberId") String memberId, @Param("currentDate") LocalDate currentDate);
 
-    @Query("SELECT t FROM Task t WHERE t.fromDate >= :fromDate AND t.fromDate <= :toDate AND t.memberId = :memberId")
+    @Query("SELECT t FROM Task t WHERE t.fromDate >= :fromDate AND t.fromDate <= :toDate AND t.memberId = :memberId ORDER BY  t.id ASC")
     List<Task> findTasksByDateRange(@Param("memberId") String memberId, @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate);
 
