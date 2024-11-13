@@ -17,9 +17,9 @@ public class Task {
     private String taskId;
     private LocalDate fromDate;
     private LocalDate toDate;
-    private LocalDate taskAssigned=LocalDate.now();
-    private LocalDate actualfromDate;
-    private LocalDate actualtoDate;
+    private LocalDate taskAssigned = LocalDate.now();
+    private LocalDate actualStartDate;
+    private LocalDate actualEndDate;
     private String subtaskId = "0"; // Default value for subtaskId
     private String subtaskDesc = ""; // Field to hold the subtask description
     private String description; // Task description
@@ -162,28 +162,28 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDate getActualfromDate() {
-        return actualfromDate;
-    }
-
-    public void setActualfromDate(LocalDate actualfromDate) {
-        this.actualfromDate = actualfromDate;
-    }
-
-    public LocalDate getActualtoDate() {
-        return actualtoDate;
-    }
-
-    public void setActualtoDate(LocalDate actualtoDate) {
-        this.actualtoDate = actualtoDate;
-    }
-
     public LocalDate getTaskAssigned() {
         return taskAssigned;
     }
 
     public void setTaskAssigned(LocalDate taskAssigned) {
         this.taskAssigned = taskAssigned;
+    }
+
+    public LocalDate getActualStartDate() {
+        return actualStartDate;
+    }
+
+    public void setActualStartDate(LocalDate actualStartDate) {
+        this.actualStartDate = actualStartDate;
+    }
+
+    public LocalDate getActualEndDate() {
+        return actualEndDate;
+    }
+
+    public void setActualEndDate(LocalDate actualEndDate) {
+        this.actualEndDate = actualEndDate;
     }
 
 }

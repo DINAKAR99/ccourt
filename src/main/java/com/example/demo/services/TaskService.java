@@ -31,6 +31,10 @@ public class TaskService {
         return taskRepository.findTasksByDateRange(memberId, fromDate, toDate);
     }
 
+    public List<Task> findTasksByDateRangeAll(LocalDate fromDate, LocalDate toDate) {
+        return taskRepository.findTasksByDateRangeAll(fromDate, toDate);
+    }
+
     public Long getTaskCountByProjectCode(String projectCode) {
         return taskRepository.countTasksByProjectCode(projectCode);
     }

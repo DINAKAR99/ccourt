@@ -89,10 +89,10 @@ public class Authcontroller {
         }
         UserLoginDetails u1 = userLoginDetailsRepository.findByUserName(jwtRequest.getUser());
         // if (u1 != null && u1.isLogin()) {
-        //     Duallogin duallogin = new Duallogin();
-        //     duallogin.setInfo("dual login ");
-        //     duallogin.setName(jwtRequest.getUser());
-        //     return new ResponseEntity<>(duallogin, HttpStatus.BAD_REQUEST);
+        // Duallogin duallogin = new Duallogin();
+        // duallogin.setInfo("dual login ");
+        // duallogin.setName(jwtRequest.getUser());
+        // return new ResponseEntity<>(duallogin, HttpStatus.BAD_REQUEST);
         // }
         UserLoginDetails user2 = userLoginDetailsRepository.findByUserName(jwtRequest.getUser());
         if (user2 == null) {
@@ -119,6 +119,7 @@ public class Authcontroller {
                 .jwttoken(token)
                 .username(userByUsername.getUsername())
                 .userid(user1.getUserId())
+                .empid(user1.getEmpid())
                 .refreshtoken(refreshToken)
                 .role(user1.getRole().getRoleId())
                 .build();

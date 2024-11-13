@@ -42,13 +42,9 @@ public class TaskController {
     }
 
     @PostMapping("/tasks/today")
-    public ResponseEntity<List<Task>> getTodayTasksForLoggedInUser() {
-         
-        LocalDate today = LocalDate.now();
-
+    public ResponseEntity<List<Task>> getTodayTasksForLoggedInUser(@RequestParam("empid") String empid) {
         // Fetch tasks for the logged-in user
-        List<Task> tasks = taskRepository.findTasksByProjectCodeOrdered();
-
+        List<Task> tasks = taskRepository.findTasksForToday(empid, LocalDate.now());
         return ResponseEntity.ok(tasks);
     }
 
@@ -59,9 +55,17 @@ public class TaskController {
         // String memberId =
         // SecurityContextHolder.getContext().getAuthentication().getName(); // Assuming
         // you have member ID from JWT
+        System.out.println(request.getEmpid() + "0-------------------");
+        List<Task> tasks = taskService.findTasksByDateRange(request.getEmpid(), fromDate, toDate);
 
-        List<Task> tasks = taskService.findTasksByDateRange("M001", fromDate, toDate);
+        return ResponseEntity.ok(tasks);
+    }
 
+    @PostMapping("/tasks/range/all")
+    public ResponseEntity<List<Task>> getTasksByDateRangeAll(@RequestBody DateRangeRequest request) {
+        LocalDate fromDate = request.getFromDate();
+        LocalDate toDate = request.getToDate();
+        List<Task> tasks = taskService.findTasksByDateRangeAll(fromDate, toDate);
         return ResponseEntity.ok(tasks);
     }
 
